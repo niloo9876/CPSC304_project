@@ -1,107 +1,224 @@
-CREATE TABLE `Producers` (
-	`Name` TEXT(40) NOT NULL AUTO_INCREMENT,
-	`BankAccount` TEXT(10) NOT NULL AUTO_INCREMENT,
-	PRIMARY KEY (`Name`)
-);
+BEGIN TRANSACTION;
 
-CREATE TABLE `Games` (
-	`Id` INT NOT NULL AUTO_INCREMENT,
-	`Name` TEXT(20) NOT NULL,
-	`Genre` TEXT(10) NOT NULL,
-	`Price` DECIMAL(10) NOT NULL,
-	`ReleaseDate` DATE NOT NULL,
-	`DevName` TEXT NOT NULL,
-	`SalePrice` DECIMAL,
-	PRIMARY KEY (`Id`)
-);
+/* Create a table called NAMES */
 
-CREATE TABLE `Customers` (
-	`Email` TEXT(40) NOT NULL,
-	`BankAccount` TEXT(10) NOT NULL,
-	`SID` INT NOT NULL UNIQUE,
-	PRIMARY KEY (`Email`)
-);
+CREATE TABLE Developers
+    (Name        CHAR(40),
+     BankAccount CHAR(10),
+     PRIMARY KEY (Name));
 
-CREATE TABLE `Members` (
-	`MID` INT NOT NULL AUTO_INCREMENT UNIQUE,
-	`Username` TEXT(10) NOT NULL,
-	`Password` TIME(20) NOT NULL,
-	`WID` INT(20) NOT NULL UNIQUE,
-	PRIMARY KEY (`MID`)
-);
+CREATE TABLE Games
+    (Genre       CHAR(10),
+     Name        CHAR(20),
+     GID         INTEGER,
+     Price       DECIMAL(19,4),
+     ReleaseDate DATE,
+     DevName     CHAR(10) NOT NULL,
+     SalePrice   DECIMAL(19,4),
+     PRIMARY KEY (GID),
+     FOREIGN KEY (DevName)   REFERENCES Developers(Name)
+                             ON DELETE CASCADE
+                             ON UPDATE CASCADE,
+     FOREIGN KEY (SalePrice) REFERENCES OnSaleLists(SalePrice)
+                             ON DELETE NO ACTION
+                             ON UPDATE CASCADE);
 
-CREATE TABLE `WIshlists` (
-	`WID` INT NOT NULL,
-	`MID` INT NOT NULL,
-	PRIMARY KEY (`WID`)
-);
+CREATE TABLE Customers
+    (Email       CHAR(40),
+     BankAccount CHAR(10),
+     SID         INTEGER UNIQUE,
+     PRIMARY KEY (Email),
+     FOREIGN KEY (SID) REFERENCES ShoppingCarts(SID));
 
-CREATE TABLE `OnSaleLists` (
-	`GID` INT NOT NULL,
-	`EventIndex` INT NOT NULL AUTO_INCREMENT,
-	`SalePrice` DECIMAL NOT NULL,
-	`StartDate` DATE NOT NULL,
-	`EndDate` DATE NOT NULL,
-	PRIMARY KEY (`EventIndex`)
-);
+CREATE TABLE Members
+    (MID         INTEGER,
+     Username    CHAR(10),
+     Password    CHAR(20),
+     WID         INTEGER UNIQUE,
+     PRIMARY KEY (MID),
+     FOREIGN KEY (WID) REFERENCES Wishlists(WID));
 
-CREATE TABLE `ShoppingCarts` (
-	`SID` INT NOT NULL AUTO_INCREMENT,
-	`Email` TEXT(40) NOT NULL,
-	PRIMARY KEY (`SID`)
-);
+CREATE TABLE Wishlists         
+    (WID         INTEGER,       
+     MID         INTEGER NOT NULL,
+     PRIMARY KEY (WID, MID),
+     FOREIGN KEY (MID) REFERENCES Members(MID)
+                       ON DELETE CASCADE);
 
-CREATE TABLE `AddRemoveFromCart` (
-	`GID` INT NOT NULL,
-	`SID` INT NOT NULL,
-	PRIMARY KEY (`SID`)
-);
+CREATE TABLE OnSaleLists
+    (GID         INTEGER,
+     EventIndex  INTEGER,
+     SalePrice   DECIMAL(19,4),
+     StartDate   DATE,
+     EndDate     DATE,
+     PRIMARY KEY (EventIndex),
+     FOREIGN KEY (GID) REFERENCES Games(GID)
+                       ON DELETE CASCADE);
 
-CREATE TABLE `AddRemoveFromWIshlist` (
-	`GID` INT NOT NULL,
-	`WID` INT NOT NULL,
-	PRIMARY KEY (`GID`)
-);
+CREATE TABLE ShoppingCarts
+    (SID         INTEGER,
+     Email       CHAR(40) NOT NULL,
+     PRIMARY KEY (SID, Email),  
+     FOREIGN KEY (Email) REFERENCES Customers(Email)
+                         ON DELETE CASCADE
+                         ON UPDATE CASCADE);
 
-CREATE TABLE `Purchases` (
-	`Email` TEXT(40) NOT NULL,
-	`GID` INT NOT NULL,
-	PRIMARY KEY (`Email`)
-);
+CREATE TABLE AddRemoveFromCart
+    (GID         INTEGER,
+     SID         INTEGER,
+     PRIMARY KEY (GID, SID),
+     FOREIGN KEY (GID) REFERENCES Games(GID)
+                       ON DELETE CASCADE,
+     FOREIGN KEY (SID) REFERENCES ShoppingCarts(SID)
+                       ON DELETE CASCADE);
 
-CREATE TABLE `Friends` (
-	`MyMID` INT NOT NULL,
-	`FriendMID` INT NOT NULL,
-	PRIMARY KEY (`MyMID`,`FriendMID`)
-);
+CREATE TABLE AddRemoveFromWishlist 
+    (GID         INTEGER,
+     WID         INTEGER,
+     PRIMARY KEY (GID, WID),
+     FOREIGN KEY (GID) REFERENCES Games(GID)
+                       ON DELETE CASCADE,
+     FOREIGN KEY (WID) REFERENCES Wishlists(WID)
+                       ON DELETE CASCADE);
 
-ALTER TABLE `Games` ADD CONSTRAINT `Games_fk0` FOREIGN KEY (`DevName`) REFERENCES `Producers`(`Name`);
+CREATE TABLE Purchases
+    (Email       CHAR(40),
+     GID         INTEGER,
+     PRIMARY KEY (Email, GID),
+     FOREIGN KEY (Email) REFERENCES Customers(Email)
+                         ON DELETE CASCADE
+                         ON UPDATE CASCADE,
+     FOREIGN KEY (GID)   REFERENCES Games(GID)
+                         ON DELETE CASCADE);
 
-ALTER TABLE `Games` ADD CONSTRAINT `Games_fk1` FOREIGN KEY (`SalePrice`) REFERENCES `OnSaleLists`(`SalePrice`);
+CREATE TABLE Friends
+    (MyMID       INTEGER,
+     FriendMID   INTEGER,
+     PRIMARY KEY (MyMID, FriendMID),
+     FOREIGN KEY (MyMID)     REFERENCES Members(MID)
+                             ON DELETE CASCADE,
+     FOREIGN KEY (FriendMID) REFERENCES Members(MID)
+                             ON DELETE CASCADE);
 
-ALTER TABLE `Customers` ADD CONSTRAINT `Customers_fk0` FOREIGN KEY (`SID`) REFERENCES `ShoppingCarts`(`SID`);
 
-ALTER TABLE `Members` ADD CONSTRAINT `Members_fk0` FOREIGN KEY (`WID`) REFERENCES `WIshlists`(`WID`);
+/* Create few records in this table */
 
-ALTER TABLE `WIshlists` ADD CONSTRAINT `WIshlists_fk0` FOREIGN KEY (`MID`) REFERENCES `Members`(`MID`);
+INSERT INTO Developers
+VALUES ("Capcom", "CAP1111");
 
-ALTER TABLE `OnSaleLists` ADD CONSTRAINT `OnSaleLists_fk0` FOREIGN KEY (`GID`) REFERENCES `Games`(`Id`);
+INSERT INTO Developers
+VALUES ("Rockstar", "ROC1111");
 
-ALTER TABLE `ShoppingCarts` ADD CONSTRAINT `ShoppingCarts_fk0` FOREIGN KEY (`Email`) REFERENCES `Customers`(`Email`);
+INSERT INTO Developers
+VALUES ("Blizzard", "BLZ1111");
 
-ALTER TABLE `AddRemoveFromCart` ADD CONSTRAINT `AddRemoveFromCart_fk0` FOREIGN KEY (`GID`) REFERENCES `Games`(`Id`);
+INSERT INTO Developers
+VALUES ("John", "JOH1111");
 
-ALTER TABLE `AddRemoveFromCart` ADD CONSTRAINT `AddRemoveFromCart_fk1` FOREIGN KEY (`SID`) REFERENCES `ShoppingCarts`(`SID`);
 
-ALTER TABLE `AddRemoveFromWIshlist` ADD CONSTRAINT `AddRemoveFromWIshlist_fk0` FOREIGN KEY (`GID`) REFERENCES `Games`(`Id`);
+INSERT INTO Games
+VALUES ("Action", "Devil May Cry 3", 0001, 59.99, 2001-11-11, "Capcom", NULL);
 
-ALTER TABLE `AddRemoveFromWIshlist` ADD CONSTRAINT `AddRemoveFromWIshlist_fk1` FOREIGN KEY (`WID`) REFERENCES `WIshlists`(`WID`);
+INSERT INTO Games
+VALUES ("Advanture", "Red Dead Redemption 2", 0002, 79.99, 2018-10-26, "Rockstar", NULL);
 
-ALTER TABLE `Purchases` ADD CONSTRAINT `Purchases_fk0` FOREIGN KEY (`Email`) REFERENCES `Customers`(`Email`);
+INSERT INTO Games
+VALUES ("FPS", "Overwatch", 0003, 49.99, 2010-11-11, "Blizzard", 29.99);
 
-ALTER TABLE `Purchases` ADD CONSTRAINT `Purchases_fk1` FOREIGN KEY (`GID`) REFERENCES `Games`(`Id`);
+INSERT INTO Games
+VALUES ("Indie", "I made it up", 0004, 19.99, 2001-11-11, "John", 9.99);
 
-ALTER TABLE `Friends` ADD CONSTRAINT `Friends_fk0` FOREIGN KEY (`MyMID`) REFERENCES `Members`(`MID`);
 
-ALTER TABLE `Friends` ADD CONSTRAINT `Friends_fk1` FOREIGN KEY (`FriendMID`) REFERENCES `Members`(`MID`);
+INSERT INTO Customers
+VALUES ("smithbbb@hotmail.com", "SMI1111", 0001);
 
+INSERT INTO Customers
+VALUES ("annawang@gmail.com", "ANN1111", 0002);
+
+INSERT INTO Customers
+VALUES ("misaki@yahoo.jp", "MIS1111", 0003);
+
+INSERT INTO Members
+VALUES (1, "annawang","123456", 0001);
+
+INSERT INTO Members
+VALUES (2, "misaki666","aaabbb", 0002);
+
+INSERT INTO Wishlists
+VALUES (1,1);
+
+INSERT INTO Wishlists
+VALUES (2,2);
+
+INSERT INTO OnSaleLists
+VALUES (3,1,29.99,2018-11-11, 2018-12-12);
+
+INSERT INTO OnSaleLIsts
+VALUES (4,2,9.99,2018-11-11, 2018-12-12);
+
+INSERT INTO ShoppingCarts
+VALUES (1,"smithbbb@hotmail.com");
+
+INSERT INTO ShoppingCarts
+VALUES (2,"annawang@gmail.com");
+
+INSERT INTO ShoppingCarts
+VALUES (3,"misaki@yahoo.jp");
+
+INSERT INTO AddRemoveFromCart
+VALUES (1,1);
+
+INSERT INTO AddRemoveFromCart
+VALUES (2,1);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1,2);
+
+INSERT INTO AddRemoveFromCart
+VALUES (2,2);
+
+INSERT INTO AddRemoveFromCart
+VALUES (3,2);
+
+INSERT INTO AddRemoveFromCart
+VALUES (4,2);
+
+INSERT INTO AddRemoveFromCart
+VALUES (2,3);
+
+INSERT INTO AddRemoveFromCart
+VALUES (3,3);
+
+INSERT INTO AddRemoveFromWishlist
+VALUES (1,1);
+
+INSERT INTO AddRemoveFromWishlist
+VALUES (2,1);
+
+INSERT INTO AddRemoveFromWishlist
+VALUES (3,1);
+
+INSERT INTO AddRemoveFromWishlist
+VALUES (4,1);
+
+INSERT INTO AddRemoveFromWishlist
+VALUES (2,2);
+
+INSERT INTO AddRemoveFromWishlist
+VALUES (3,2);
+
+INSERT INTO Purchases
+VALUES ("smithbbb@hotmail.com",3);
+
+INSERT INTO Purchases
+VALUES ("smithbbb@hotmail.com",4);
+
+INSERT INTO Friends
+VALUES (1,2);
+
+
+COMMIT;
+
+/* Display all the records from the table */
+SELECT * FROM customers;
+SELECT * FROM members;
