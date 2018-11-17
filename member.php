@@ -81,7 +81,7 @@
 
 </form>
 
-<p> Search For Currently On Sale Games In My Wishlist: </p>
+<p> (Deliverable 5: 3 table join query) Search For Currently On Sale Games In My Wishlist: </p>
 <form method="POST" action="member.php">
 <!--refresh page when submit-->
 
@@ -98,54 +98,23 @@
 </table></p>
 </form>
 
-<p> Add a game to the OnSaleList: </p>
-<form method="POST" action="developer.php">
+<p> (Deliverable 6: 2 table join query) Search For Certain Developer's Game In My Wishlist: </p>
+<form method="POST" action="member.php">
+    <!--refresh page when submit-->
 
-<p><table>
-  <tr>
-    <td><font size="2">Game ID</font></td>
-  </tr>
-  <tr>
-    <td><input type="text" name="addSaleGameID" size="12"></td>
-  </tr>
-  <tr>
-    <td><input type="submit" value="Start Sale" name="addSaleSubmit"></p></td>
-  </tr>
-</table></p>
+    <p><table>
+        <tr>
+            <td><font size="2">Developer's Name</font></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="developerName" size="12"></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Search Games" name="searchDeveloperGame"></p></td>
+    </tr>
+    </table></p>
 </form>
 
-<p> Update existing games in the OnSaleList: </p>
-<form method="POST" action="developer.php">
-
-<p><table>
-  <tr>
-    <td><font size="2">Game ID</font></td>
-  </tr>
-  <tr>
-    <td><input type="text" name="updateSaleGameID" size="12"></td>
-  </tr>
-  <tr>
-    <td><input type="submit" value="Update Sale" name="updateSaleSubmit"></p></td>
-  </tr>
-</table></p>
-</form>
-
-<p> Delete a game from the OnSaleList: </p>
-<form method="POST" action="developer.php">
-<!--refresh page when submit-->
-
-<p><table>
-  <tr>
-    <td><font size="2">Game ID</font></td>
-  </tr>
-  <tr>
-    <td><input type="text" name="deleteSaleGameID" size="12"></td>
-  </tr>
-  <tr>
-    <td><input type="submit" value="End Sale" name="deleteSaleSubmit"></p></td>
-  </tr>
-</table></p>
-</form>
 
 
 <a href="steam.php">Back to home</a>

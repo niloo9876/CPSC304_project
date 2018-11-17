@@ -17,7 +17,7 @@
 <p><input type="submit" value="run hardcoded queries" name="dostuff"></p>
 </form>
 
-<p>Search for games in the library:</p>
+<p>(Deliverable 8: a simple query)Search for games in the library:</p>
 
 <form method="POST" action="customer.php">
 <p><table>
@@ -55,7 +55,7 @@
 </table>
 </form>
 
-<p> Add a game to shopping cart: </p>
+<p> (Deliverable 9: a simple query)Add a game to shopping cart: </p>
 <form method="POST" action="customer.php">
 <p><table>
   <tr>

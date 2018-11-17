@@ -17,7 +17,7 @@
 <p><input type="submit" value="run hardcoded queries" name="dostuff"></p>
 </form>
 
-<p>Add a game into the library:</p>
+<p>(Deliverable 2: INSERT) Add a game into the library:</p>
 
 <form method="POST" action="developer.php">
 <p><table>
@@ -55,7 +55,7 @@
 </table>
 </form>
 
-<p> Update an existing game in the library, please provide the existing game ID: </p>
+<p> (Deliverable 4: UPDATE) Update an existing game in the library, please provide the existing game ID: </p>
 <form method="POST" action="developer.php">
 <p><table>
   <tr>
@@ -95,7 +95,7 @@
 
 </form>
 
-<p> Delete a game from the library: </p>
+<p> (Deliverable 3: DELETE) Delete a game from the library: </p>
 <form method="POST" action="developer.php">
 <!--refresh page when submit-->
 
@@ -112,7 +112,7 @@
 </table></p>
 </form>
 
-<p> Add a game to the OnSaleList: </p>
+<p> (Deliverable 10: a simple query) Add a game to the OnSaleList: </p>
 <form method="POST" action="developer.php">
 
 <p><table>
