@@ -274,13 +274,39 @@ function executeBoundSQL($cmdstr, $list) {
 
 }
 
-function printResult($result) { //prints results from a select statement
-	echo "<br>Got data from table tab1:<br>";
-	echo "<table>";
-	echo "<tr><th>ID</th><th>Name</th><th>Gender</th></tr>";
+function printGamesResult($result) { //prints results from a select statement
+  echo "<br>Got data from table Games:<br>";
+	echo "<table style=\"border-spacing: 20px 0;\">";
+	echo "<tr><td>Genre</td><td>Name</td><td>Game ID</td><td>Price</td><td>Release Date</td><td>Developer</td></tr>";
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-		echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>"; //or just use "echo $row[0]"
+    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td><td>" . $row[3] . "</td><td>" 
+    . $row[4] . "</td><td>"  . $row[5] . "</td></tr>" ; //or just use "echo $row[0]"
+	}
+	echo "</table>";
+
+}
+
+function printSaleResult($result) { //prints results from a select statement
+	echo "<br>Got data from table Games:<br>";
+	echo "<table style=\"border-spacing: 20px 0;\">";
+	echo "<tr><td>Event Index</td><td>Sale Price</td><td>Start Date</td><td>End Date</td><td>Game ID</td></tr>";
+
+	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td><td>" . $row[3] . "</td><td>" 
+    . $row[4] . "</td></tr>" ; //or just use "echo $row[0]"
+	}
+	echo "</table>";
+
+}
+
+function printDevResult($result) { //prints results from a select statement
+	echo "<br>Got data from table Games:<br>";
+	echo "<table style=\"border-spacing: 20px 0;\">";
+	echo "<tr><td>Developer Name</td><td>Bank Account</td></tr>";
+
+	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
 	}
 	echo "</table>";
 
@@ -319,7 +345,19 @@ if ($db_conn) {
 			);
 			executeBoundSQL("INSERT INTO Games
       VALUES (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $alltuples);
-			OCICommit($db_conn);
+      OCICommit($db_conn);
+      
+      if ($_POST && $success) {
+        //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+        header("location: developer.php");
+      } else {
+        // Select data...
+        $result = executePlainSQL("select * from games");
+        printGamesResult($result);
+      }
+    
+      //Commit to save changes...
+      OCILogoff($db_conn);
 		} else
 			if (array_key_exists('updateGameSubmit', $_POST)) {
         // Update existing game using data from user
@@ -338,9 +376,21 @@ if ($db_conn) {
 					$tuple
         );
         executeBoundSQL("UPDATE Games 
-          SET Genre=:bind1, Name=:bind2, Price=:bind3, DName=:bind4, salePrice=:bind5 
+          SET Genre=:bind1, Name=:bind2, Price=:bind3, DevName=:bind4, salePrice=:bind5 
           WHERE GID=:bind6", $alltuples);
-				OCICommit($db_conn);
+        OCICommit($db_conn);
+
+        if ($_POST && $success) {
+          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+          header("location: developer.php");
+        } else {
+          // Select data...
+          $result = executePlainSQL("select * from games");
+          printGamesResult($result);
+        }
+      
+        //Commit to save changes...
+        OCILogoff($db_conn);
 			} else
         if (array_key_exists('deleteGameSubmit', $_POST)) {
         // Delete existing game using data from user
@@ -352,6 +402,18 @@ if ($db_conn) {
         );
         executeBoundSQL("DELETE FROM Games WHERE GID=:bind1", $alltuples);
         OCICommit($db_conn);
+
+        if ($_POST && $success) {
+          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+          header("location: developer.php");
+        } else {
+          // Select data...
+          $result = executePlainSQL("select * from games");
+          printGamesResult($result);
+        }
+      
+        //Commit to save changes...
+        OCILogoff($db_conn);
       } else
         if (array_key_exists('addSaleSubmit', $_POST)) {
           // Getting the values from user and insert game into the onSaleList
@@ -368,6 +430,18 @@ if ($db_conn) {
         executeBoundSQL("INSERT INTO OnSaleList
         VALUES (:bind1, :bind2, :bind3, :bind4, :bind5)", $alltuples);
         OCICommit($db_conn);
+
+        if ($_POST && $success) {
+          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+          header("location: developer.php");
+        } else {
+          // Select data...
+          $result = executePlainSQL("select * from OnSaleList");
+          printSaleResult($result);
+        }
+      
+        //Commit to save changes...
+        OCILogoff($db_conn);
       } else
 			  if (array_key_exists('updateSaleSubmit', $_POST)) {
         // Update existing entry in OnSaleList using data from user
@@ -382,7 +456,19 @@ if ($db_conn) {
         executeBoundSQL("UPDATE OnSaleList 
           SET SalePrice=:bind1, EndDate=:bind2 
           WHERE EventIndex=:bind3", $alltuples);
-				OCICommit($db_conn);
+        OCICommit($db_conn);
+        
+        if ($_POST && $success) {
+          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+          header("location: developer.php");
+        } else {
+          // Select data...
+          $result = executePlainSQL("select * from OnSaleList");
+          printSaleResult($result);
+        }
+      
+        //Commit to save changes...
+        OCILogoff($db_conn);
 			} else
         if (array_key_exists('deleteSaleSubmit', $_POST)) {
         // Delete entry in OnSaleList using data from user
@@ -394,6 +480,18 @@ if ($db_conn) {
         );
         executeBoundSQL("DELETE FROM OnSaleList WHERE EventIndex=:bind1", $alltuples);
         OCICommit($db_conn);
+
+        if ($_POST && $success) {
+          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+          header("location: developer.php");
+        } else {
+          // Select data...
+          $result = executePlainSQL("select * from OnSaleList");
+          printSaleResult($result);
+        }
+      
+        //Commit to save changes...
+        OCILogoff($db_conn);
       } else
         if (array_key_exists('updateDevSubmit', $_POST)) {
         // Update existing entry in OnSaleList using data from user
@@ -409,44 +507,34 @@ if ($db_conn) {
           SET Name=:bind1, BankAccount=:bind2 
           WHERE Name=:bind3", $alltuples);
         OCICommit($db_conn);
+
+        if ($_POST && $success) {
+          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+          header("location: developer.php");
+        } else {
+          // Select data...
+          $result = executePlainSQL("select * from Developers");
+          printDevResult($result);
+        }
+      
+        //Commit to save changes...
+        OCILogoff($db_conn);
       } else
 				if (array_key_exists('dostuff', $_POST)) {
-					// Insert data into table...
-					executePlainSQL("insert into tab1 values (10, 'Frank', 'Male')");
-					// Inserting data into table using bound variables
-					$list1 = array (
-						":bind1" => 6,
-						":bind2" => "All",
-            ":bind3" => "Male"
-					);
-					$list2 = array (
-						":bind1" => 7,
-						":bind2" => "John",
-            ":bind3" => "Male"
-					);
-					$allrows = array (
-						$list1,
-						$list2
-					);
-					executeBoundSQL("insert into tab1 values (:bind1, :bind2, :bind3)", $allrows); //the function takes a list of lists
-					// Update data...
-					//executePlainSQL("update tab1 set nid=10 where nid=2");
-					// Delete data...
-					//executePlainSQL("delete from tab1 where nid=1");
-					OCICommit($db_conn);
+          //
+          
+          if ($_POST && $success) {
+            //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+            header("location: developer.php");
+          } else {
+            // Select data...
+            $result = executePlainSQL("select * from Games");
+            printResult($result);
+          }
+        
+          //Commit to save changes...
+          OCILogoff($db_conn);
 				}
-
-	if ($_POST && $success) {
-		//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-		header("location: developer.php");
-	} else {
-		// Select data...
-		$result = executePlainSQL("select * from tab1");
-		printResult($result);
-	}
-
-	//Commit to save changes...
-	OCILogoff($db_conn);
 } else {
 	echo "cannot connect";
 	$e = OCI_Error(); // For OCILogon errors pass no handle
