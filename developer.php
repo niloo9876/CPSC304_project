@@ -17,8 +17,7 @@
 <p><input type="submit" value="run hardcoded queries" name="dostuff"></p>
 </form>
 
-<p>Add a game into the library:</p>
-
+<p>(Deliverable 2: INSERT) Add a game into the library:</p>
 <form method="POST" action="developer.php">
 <p><table>
   <tr>
@@ -50,12 +49,12 @@
     <td><input type="text" name="gameSalePrice" size="16"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Add Game" name="insertGameSubmit"></p></td>
+    <td><input type="submit" value="Add Game" name="insertGameSubmit"></td>
   </tr>
-</table>
+</table></p>
 </form>
 
-<p> Update an existing game in the library, please provide the existing game ID: </p>
+<p> (Deliverable 4: UPDATE) Update an existing game in the library, please provide the existing game ID: </p>
 <form method="POST" action="developer.php">
 <p><table>
   <tr>
@@ -70,7 +69,7 @@
     <td><font size="2">Price</font></td>
     <td><font size="2">Developer Name</font></td>
     <td><font size="2">On-Sale Price</font></td>
-    </tr>
+  </tr>
   <tr>
     <td>
       <select name="updateGameGenre">
@@ -89,13 +88,13 @@
     <td><input type="text" name="updateGameSalePrice" size="16"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Update Game" name="updateGameSubmit"></p></td>
+    <td><input type="submit" value="Update Game" name="updateGameSubmit"></td>
   </tr>
-</table>
+</table></p>
 
 </form>
 
-<p> Delete a game from the library: </p>
+<p> (Deliverable 3: DELETE) Delete a game from the library: </p>
 <form method="POST" action="developer.php">
 <!--refresh page when submit-->
 
@@ -107,23 +106,31 @@
     <td><input type="text" name="deleteGameID" size="12"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Delete Game" name="deleteGameSubmit"></p></td>
+    <td><input type="submit" value="Delete Game" name="deleteGameSubmit"></td>
   </tr>
 </table></p>
 </form>
 
-<p> Add a game to the OnSaleList: </p>
+<p> (Deliverable 10: a simple query) Add a game to the OnSaleList: </p>
 <form method="POST" action="developer.php">
 
 <p><table>
   <tr>
     <td><font size="2">Game ID</font></td>
+    <td><font size="2">Event Index</font></td>
+    <td><font size="2">Sale Price</font></td>
+    <td><font size="2">Start Date</font></td>
+    <td><font size="2">End Date</font></td>
   </tr>
   <tr>
     <td><input type="text" name="addSaleGameID" size="12"></td>
+    <td><input type="text" name="addSaleEventIndex" size="12"></td>
+    <td><input type="text" name="addSalePrice" size="12"></td>
+    <td><input type="text" name="addSaleStart" size="12"></td>
+    <td><input type="text" name="addSaleEnd" size="12"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Start Sale" name="addSaleSubmit"></p></td>
+    <td><input type="submit" value="Start Sale" name="addSaleSubmit"></td>
   </tr>
 </table></p>
 </form>
@@ -133,13 +140,21 @@
 
 <p><table>
   <tr>
-    <td><font size="2">Game ID</font></td>
+    <td><font size="2">Event Index</font></td>
   </tr>
   <tr>
-    <td><input type="text" name="updateSaleGameID" size="12"></td>
+    <td><input type="text" name="updateEventIndex" size="12"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Update Sale" name="updateSaleSubmit"></p></td>
+    <td><font size="2">Updated Sale Price</font></td>
+    <td><font size="2">Updated Sale End Date</font></td>
+  </tr>
+  <tr>
+    <td><input type="text" name="updateSalePrice" size="15"></td>
+    <td><input type="text" name="updateSaleEnd" size="15"></td>
+  </tr>
+  <tr>
+    <td><input type="submit" value="Update Sale" name="updateSaleSubmit"></td>
   </tr>
 </table></p>
 </form>
@@ -149,14 +164,14 @@
 <!--refresh page when submit-->
 
 <p><table>
-  <tr>
-    <td><font size="2">Game ID</font></td>
+<tr>
+    <td><font size="2">Event Index</font></td>
   </tr>
   <tr>
-    <td><input type="text" name="deleteSaleGameID" size="12"></td>
+    <td><input type="text" name="deleteEventIndex" size="12"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="End Sale" name="deleteSaleSubmit"></p></td>
+    <td><input type="submit" value="End Sale" name="deleteSaleSubmit"></td>
   </tr>
 </table></p>
 </form>
@@ -180,7 +195,7 @@
     <td><input type="text" name="updateDevBank" size="30"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Update Developer Information" name="updateDevSubmit"></p></td>
+    <td><input type="submit" value="Update Developer Information" name="updateDevSubmit"></td>
   </tr>
 </table></p>
 </form>
@@ -274,7 +289,7 @@ function printResult($result) { //prints results from a select statement
 // Connect Oracle...
 if ($db_conn) {
 
-	if (array_key_exists('reset', $_POST)) {
+	if (array_key_exists('reset', $_POST)) { // TODO
 		// Drop old table...
 		echo "<br> dropping table <br>";
 		executePlainSQL("Drop table tab1");
@@ -285,49 +300,115 @@ if ($db_conn) {
 		OCICommit($db_conn);
 
 	} else
-		if (array_key_exists('insertsubmit', $_POST)) {
-			//Getting the values from user and insert data into the table
+		if (array_key_exists('insertGameSubmit', $_POST)) {
+			//Getting the values from user and insert game into the table
 			if(isset($_POST['gameGenre']) ) {
 				$varGenre = $_POST['gameGenre'];
 			}
 			$tuple = array (
-				":bind1" => $_POST['insNo'],
-				":bind2" => $_POST['insName'],
-        		":bind4" => $_POST['insGender']
+				":bind1" => $varGenre,
+				":bind2" => $_POST['gameName'],
+        ":bind3" => $_POST['gameID'],
+        ":bind4" => $_POST['gamePrice'],
+				":bind5" => $_POST['gameReleaseDate'],
+        ":bind6" => $_POST['gameDevName'],
+        ":bind7" => $_POST['gameSalePrice']
 			);
 			$alltuples = array (
 				$tuple
 			);
-			executeBoundSQL("insert into tab1 values (:bind1, :bind2, :bind3)", $alltuples);
+			executeBoundSQL("INSERT INTO Games
+      VALUES (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $alltuples);
 			OCICommit($db_conn);
-
 		} else
-			if (array_key_exists('updatesubmit', $_POST)) {
-				// Update tuple using data from user
+			if (array_key_exists('updateGameSubmit', $_POST)) {
+        // Update existing game using data from user
+        if(isset($_POST['updateGameGenre']) ) {
+          $varUpdateGenre = $_POST['updateGameGenre'];
+        }
 				$tuple = array (
-					":bind1" => $_POST['oldName'],
-					":bind2" => $_POST['newName'],
-          ":bind3" => $_POST['gender']
+					":bind1" => $varUpdateGenre,
+					":bind2" => $_POST['updateGameName'],
+          ":bind3" => $_POST['updateGamePrice'],
+          ":bind4" => $_POST['updateDevName'],
+					":bind5" => $_POST['updateSalePrice'],
+          ":bind6" => $_POST['updateGameID']
 				);
 				$alltuples = array (
 					$tuple
-				);
-				executeBoundSQL("update tab1 set name=:bind2 where name=:bind1 and gender=:bind3", $alltuples);
+        );
+        executeBoundSQL("UPDATE Games 
+          SET Genre=:bind1, Name=:bind2, Price=:bind3, DName=:bind4, salePrice=:bind5 
+          WHERE GID=:bind6", $alltuples);
 				OCICommit($db_conn);
-
 			} else
-      if (array_key_exists('deletesubmit', $_POST)) {
-        // Update tuple using data from user
+        if (array_key_exists('deleteGameSubmit', $_POST)) {
+        // Delete existing game using data from user
         $tuple = array (
-          ":bind2" => $_POST['deleteName'],
-          ":bind3" => $_POST['deleteGender']
+          ":bind1" => $_POST['deleteGameID']
         );
         $alltuples = array (
           $tuple
         );
-        executeBoundSQL("delete from tab1 where name=:bind2 and gender=:bind3", $alltuples);
+        executeBoundSQL("DELETE FROM Games WHERE GID=:bind1", $alltuples);
         OCICommit($db_conn);
-
+      } else
+        if (array_key_exists('addSaleSubmit', $_POST)) {
+          // Getting the values from user and insert game into the onSaleList
+        $tuple = array (
+          ":bind1" => $_POST['addSaleGameID'],
+          ":bind2" => $_POST['addSaleEventIndex'],
+          ":bind3" => $_POST['addSalePrice'],
+          ":bind4" => $_POST['addSaleStart'],
+          ":bind5" => $_POST['addSaleEnd']
+        );
+        $alltuples = array (
+          $tuple
+        );
+        executeBoundSQL("INSERT INTO OnSaleList
+        VALUES (:bind1, :bind2, :bind3, :bind4, :bind5)", $alltuples);
+        OCICommit($db_conn);
+      } else
+			  if (array_key_exists('updateSaleSubmit', $_POST)) {
+        // Update existing entry in OnSaleList using data from user
+				$tuple = array (
+					":bind1" => $_POST['updateSalePrice'],
+					":bind2" => $_POST['updateSaleEnd'],
+          ":bind3" => $_POST['updateEventIndex']
+				);
+				$alltuples = array (
+					$tuple
+        );
+        executeBoundSQL("UPDATE OnSaleList 
+          SET SalePrice=:bind1, EndDate=:bind2 
+          WHERE EventIndex=:bind3", $alltuples);
+				OCICommit($db_conn);
+			} else
+        if (array_key_exists('deleteSaleSubmit', $_POST)) {
+        // Delete entry in OnSaleList using data from user
+        $tuple = array (
+          ":bind1" => $_POST['deleteEventIndex']
+        );
+        $alltuples = array (
+          $tuple
+        );
+        executeBoundSQL("DELETE FROM OnSaleList WHERE EventIndex=:bind1", $alltuples);
+        OCICommit($db_conn);
+      } else
+        if (array_key_exists('updateDevSubmit', $_POST)) {
+        // Update existing entry in OnSaleList using data from user
+        $tuple = array (
+          ":bind1" => $_POST['updateDevName'],
+          ":bind2" => $_POST['updateDevBank'],
+          ":bind3" => $_POST['oldDevName']
+        );
+        $alltuples = array (
+          $tuple
+        );
+        executeBoundSQL("UPDATE Developers 
+          SET Name=:bind1, BankAccount=:bind2 
+          WHERE Name=:bind3", $alltuples);
+        OCICommit($db_conn);
       } else
 				if (array_key_exists('dostuff', $_POST)) {
 					// Insert data into table...
