@@ -14,7 +14,7 @@
 <form method="POST" action="developer.php">
    
 <p><input type="submit" value="Reset" name="reset"></p>
-<p><input type="submit" value="run hardcoded queries" name="dostuff"></p>
+<p><input type="submit" value="Show All Relevant Tables" name="dostuff"></p>
 </form>
 
 <p>(Deliverable 2: INSERT) Add a game into the library:</p>
@@ -27,18 +27,18 @@
     <td><font size="2">Price</font></td>
     <td><font size="2">Release Date</font></td>
     <td><font size="2">Developer Name</font></td>
-    <td><font size="2">On-Sale Price</font></td>
     </tr>
   <tr>
     <td>
       <select name="gameGenre">
-      <option value="">Action</option>
-      <option value="">Survival Horror</option>
-      <option value="">Simulation</option>
-      <option value="">Strategy</option>
-      <option value="">Role-Playing</option>
-      <option value="">Sports</option>
-      <option value="">Adventure</option>
+      <option value="Action-Adventure">Action-Adventure</option>
+      <option value="Action">Action</option>
+      <option value="Survival Horror">Survival Horror</option>
+      <option value="Simulation">Simulation</option>
+      <option value="Strategy">Strategy</option>
+      <option value="Role-Playing">Role-Playing</option>
+      <option value="Sports">Sports</option>
+      <option value="Adventure">Adventure</option>
       </select>
     </td>
     <td><input type="text" name="gameName" size="20"></td>
@@ -46,7 +46,6 @@
     <td><input type="text" name="gamePrice" size="8"></td>
     <td><input type="text" name="gameReleaseDate" size="15"></td>
     <td><input type="text" name="gameDevName" size="20"></td>
-    <td><input type="text" name="gameSalePrice" size="16"></td>
   </tr>
   <tr>
     <td><input type="submit" value="Add Game" name="insertGameSubmit"></td>
@@ -68,24 +67,23 @@
     <td><font size="2">Game Name</font></td>
     <td><font size="2">Price</font></td>
     <td><font size="2">Developer Name</font></td>
-    <td><font size="2">On-Sale Price</font></td>
   </tr>
   <tr>
     <td>
       <select name="updateGameGenre">
-      <option value="">Action</option>
-      <option value="">Survival Horror</option>
-      <option value="">Simulation</option>
-      <option value="">Strategy</option>
-      <option value="">Role-Playing</option>
-      <option value="">Sports</option>
-      <option value="">Adventure</option>
+      <option value="Action-Adventure">Action-Adventure</option>
+      <option value="Action">Action</option>
+      <option value="Survival Horror">Survival Horror</option>
+      <option value="Simulation">Simulation</option>
+      <option value="Strategy">Strategy</option>
+      <option value="Role-Playing">Role-Playing</option>
+      <option value="Sports">Sports</option>
+      <option value="Adventure">Adventure</option>
       </select>
     </td>
     <td><input type="text" name="updateGameName" size="20"></td>
     <td><input type="text" name="updateGamePrice" size="8"></td>
     <td><input type="text" name="updateGameDevName" size="20"></td>
-    <td><input type="text" name="updateGameSalePrice" size="16"></td>
   </tr>
   <tr>
     <td><input type="submit" value="Update Game" name="updateGameSubmit"></td>
@@ -116,15 +114,15 @@
 
 <p><table>
   <tr>
+    <td><font size="2">Event Index</font></td>  
     <td><font size="2">Game ID</font></td>
-    <td><font size="2">Event Index</font></td>
     <td><font size="2">Sale Price</font></td>
     <td><font size="2">Start Date</font></td>
     <td><font size="2">End Date</font></td>
   </tr>
   <tr>
-    <td><input type="text" name="addSaleGameID" size="12"></td>
     <td><input type="text" name="addSaleEventIndex" size="12"></td>
+    <td><input type="text" name="addSaleGameID" size="12"></td>
     <td><input type="text" name="addSalePrice" size="12"></td>
     <td><input type="text" name="addSaleStart" size="12"></td>
     <td><input type="text" name="addSaleEnd" size="12"></td>
@@ -280,7 +278,7 @@ function printGamesResult($result) { //prints results from a select statement
 	echo "<tr><td>Genre</td><td>Name</td><td>Game ID</td><td>Price</td><td>Release Date</td><td>Developer</td></tr>";
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td><td>" . $row[3] . "</td><td>" 
+    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td><td>" . "\$" . $row[3] . "</td><td>" 
     . $row[4] . "</td><td>"  . $row[5] . "</td></tr>" ; //or just use "echo $row[0]"
 	}
 	echo "</table>";
@@ -288,12 +286,12 @@ function printGamesResult($result) { //prints results from a select statement
 }
 
 function printSaleResult($result) { //prints results from a select statement
-	echo "<br>Got data from table Games:<br>";
+	echo "<br>Got data from onSaleList:<br>";
 	echo "<table style=\"border-spacing: 20px 0;\">";
-	echo "<tr><td>Event Index</td><td>Sale Price</td><td>Start Date</td><td>End Date</td><td>Game ID</td></tr>";
+	echo "<tr><td>Event Index</td><td>Game ID</td><td>Sale Price</td><td>Start Date</td><td>End Date</td></tr>";
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td><td>" . $row[3] . "</td><td>" 
+    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . "\$" . $row[2] . "</td><td>" . $row[3] . "</td><td>" 
     . $row[4] . "</td></tr>" ; //or just use "echo $row[0]"
 	}
 	echo "</table>";
@@ -301,7 +299,7 @@ function printSaleResult($result) { //prints results from a select statement
 }
 
 function printDevResult($result) { //prints results from a select statement
-	echo "<br>Got data from table Games:<br>";
+	echo "<br>Got data from table Developers:<br>";
 	echo "<table style=\"border-spacing: 20px 0;\">";
 	echo "<tr><td>Developer Name</td><td>Bank Account</td></tr>";
 
@@ -327,67 +325,60 @@ if ($db_conn) {
 
 	} else
 		if (array_key_exists('insertGameSubmit', $_POST)) {
-			//Getting the values from user and insert game into the table
-			if(isset($_POST['gameGenre']) ) {
-				$varGenre = $_POST['gameGenre'];
-			}
+      //Getting the values from user and insert game into the table
+			// if(isset($_POST[gameGenre]) ) {
+			// 	$varGenre = $_POST[gameGenre];
+			// }
 			$tuple = array (
-				":bind1" => $varGenre,
+				":bind1" => $_POST['gameGenre'],
 				":bind2" => $_POST['gameName'],
         ":bind3" => $_POST['gameID'],
         ":bind4" => $_POST['gamePrice'],
 				":bind5" => $_POST['gameReleaseDate'],
         ":bind6" => $_POST['gameDevName'],
-        ":bind7" => $_POST['gameSalePrice']
 			);
 			$alltuples = array (
 				$tuple
 			);
 			executeBoundSQL("INSERT INTO Games
-      VALUES (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $alltuples);
+      VALUES (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6)", $alltuples);
       OCICommit($db_conn);
       
       if ($_POST && $success) {
         //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
         header("location: developer.php");
-      } else {
-        // Select data...
-        $result = executePlainSQL("select * from games");
-        printGamesResult($result);
       }
+        // Select data...
+        $result = executePlainSQL("select genre, name, gid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
+        printGamesResult($result);
     
       //Commit to save changes...
       OCILogoff($db_conn);
 		} else
 			if (array_key_exists('updateGameSubmit', $_POST)) {
         // Update existing game using data from user
-        if(isset($_POST['updateGameGenre']) ) {
-          $varUpdateGenre = $_POST['updateGameGenre'];
-        }
 				$tuple = array (
-					":bind1" => $varUpdateGenre,
+					":bind1" => $_POST['updateGameGenre'],
 					":bind2" => $_POST['updateGameName'],
           ":bind3" => $_POST['updateGamePrice'],
-          ":bind4" => $_POST['updateDevName'],
-					":bind5" => $_POST['updateSalePrice'],
-          ":bind6" => $_POST['updateGameID']
+          ":bind4" => $_POST['updateGameDevName'],
+          ":bind5" => $_POST['updateGameID']
 				);
 				$alltuples = array (
 					$tuple
         );
         executeBoundSQL("UPDATE Games 
-          SET Genre=:bind1, Name=:bind2, Price=:bind3, DevName=:bind4, salePrice=:bind5 
-          WHERE GID=:bind6", $alltuples);
+          SET Genre=:bind1, Name=:bind2, Price=:bind3, DevName=:bind4 
+          WHERE GID=:bind5", $alltuples);
         OCICommit($db_conn);
 
         if ($_POST && $success) {
           //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
           header("location: developer.php");
-        } else {
+        } 
           // Select data...
-          $result = executePlainSQL("select * from games");
+          $result = executePlainSQL("select genre, name, gid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
           printGamesResult($result);
-        }
       
         //Commit to save changes...
         OCILogoff($db_conn);
@@ -406,11 +397,10 @@ if ($db_conn) {
         if ($_POST && $success) {
           //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
           header("location: developer.php");
-        } else {
+        } 
           // Select data...
-          $result = executePlainSQL("select * from games");
+          $result = executePlainSQL("select genre, name, gid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
           printGamesResult($result);
-        }
       
         //Commit to save changes...
         OCILogoff($db_conn);
@@ -418,8 +408,8 @@ if ($db_conn) {
         if (array_key_exists('addSaleSubmit', $_POST)) {
           // Getting the values from user and insert game into the onSaleList
         $tuple = array (
-          ":bind1" => $_POST['addSaleGameID'],
-          ":bind2" => $_POST['addSaleEventIndex'],
+          ":bind1" => $_POST['addSaleEventIndex'],
+          ":bind2" => $_POST['addSaleGameID'],
           ":bind3" => $_POST['addSalePrice'],
           ":bind4" => $_POST['addSaleStart'],
           ":bind5" => $_POST['addSaleEnd']
@@ -434,11 +424,10 @@ if ($db_conn) {
         if ($_POST && $success) {
           //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
           header("location: developer.php");
-        } else {
-          // Select data...
-          $result = executePlainSQL("select * from OnSaleList");
-          printSaleResult($result);
         }
+          // Select data...
+          $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+          printSaleResult($result);
       
         //Commit to save changes...
         OCILogoff($db_conn);
@@ -461,11 +450,10 @@ if ($db_conn) {
         if ($_POST && $success) {
           //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
           header("location: developer.php");
-        } else {
-          // Select data...
-          $result = executePlainSQL("select * from OnSaleList");
-          printSaleResult($result);
         }
+          // Select data...
+          $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+          printSaleResult($result);
       
         //Commit to save changes...
         OCILogoff($db_conn);
@@ -484,11 +472,10 @@ if ($db_conn) {
         if ($_POST && $success) {
           //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
           header("location: developer.php");
-        } else {
-          // Select data...
-          $result = executePlainSQL("select * from OnSaleList");
-          printSaleResult($result);
         }
+          // Select data...
+          $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+          printSaleResult($result);
       
         //Commit to save changes...
         OCILogoff($db_conn);
@@ -511,11 +498,10 @@ if ($db_conn) {
         if ($_POST && $success) {
           //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
           header("location: developer.php");
-        } else {
+        }
           // Select data...
           $result = executePlainSQL("select * from Developers");
           printDevResult($result);
-        }
       
         //Commit to save changes...
         OCILogoff($db_conn);
@@ -523,14 +509,17 @@ if ($db_conn) {
 				if (array_key_exists('dostuff', $_POST)) {
           //
           
-          if ($_POST && $success) {
-            //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-            header("location: developer.php");
-          } else {
+          // if ($_POST && $success) {
+          //   //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+          //   header("location: developer.php");
+          // } 
             // Select data...
-            $result = executePlainSQL("select * from Games");
-            printResult($result);
-          }
+            $result = executePlainSQL("select genre, name, gid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
+            printGamesResult($result);
+            $result = executePlainSQL("select * from Developers");
+            printDevResult($result);
+            $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+            printSaleResult($result);
         
           //Commit to save changes...
           OCILogoff($db_conn);
