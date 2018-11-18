@@ -2,15 +2,14 @@
 <html>
   <head>
     <link href="style.php" type="text/css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,700" rel="stylesheet">
   </head>
 
 
 <form method="POST" action="developer.php">
-   
-<p><input type="submit" value="Placeholder" name="reset"></p>
-<p>To Show Games, Developers, and onSaleList, press the following button: </p>
+<div class="center"><p class="title">GAME DEVELOPER</p>
 <p><input type="submit" value="Show All Tables" name="dostuff"></p>
+</div>
 </form>
 
 <div id="developerGamesQuery">
@@ -129,8 +128,8 @@
     <td><input type="text" name="addSaleEventIndex" size="12"></td>
     <td><input type="text" name="addSaleGameID" size="12"></td>
     <td><input type="text" name="addSalePrice" size="12"></td>
-    <td><input type="text" name="addSaleStart" size="12"></td>
-    <td><input type="text" name="addSaleEnd" size="12"></td>
+    <td><input type="date" name="addSaleStart" size="12"></td>
+    <td><input type="date" name="addSaleEnd" size="12"></td>
   </tr>
   <tr>
     <td><input type="submit" value="Start Sale" name="addSaleSubmit"></td>
@@ -154,7 +153,7 @@
   </tr>
   <tr>
     <td><input type="text" name="updateSalePrice" size="15"></td>
-    <td><input type="text" name="updateSaleEnd" size="15"></td>
+    <td><input type="date" name="updateSaleEnd" size="15"></td>
   </tr>
   <tr>
     <td><input type="submit" value="Update Sale" name="updateSaleSubmit"></td>
@@ -407,7 +406,7 @@ if ($db_conn) {
           header("location: developer.php");
         } 
           // Select data...
-          $result = executePlainSQL("select genre, name, gid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
+          $result = executePlainSQL("select genre, name, ogid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
           printGamesResult($result);
       
         //Commit to save changes...
@@ -434,7 +433,7 @@ if ($db_conn) {
           header("location: developer.php");
         }
           // Select data...
-          $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+          $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
           printSaleResult($result);
       
         //Commit to save changes...
@@ -482,7 +481,7 @@ if ($db_conn) {
           header("location: developer.php");
         }
           // Select data...
-          $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+          $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
           printSaleResult($result);
       
         //Commit to save changes...
@@ -526,7 +525,7 @@ if ($db_conn) {
             printGamesResult($result);
             $result = executePlainSQL("select * from Developers");
             printDevResult($result);
-            $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+            $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
             printSaleResult($result);
         
           //Commit to save changes...

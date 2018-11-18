@@ -1,94 +1,170 @@
-<!--Project File for UBC CPSC 304
-  IF YOU HAVE A TABLE CALLED "tab1" IT WILL BE DESTROYED
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="style.php" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,700" rel="stylesheet">
+  </head>
 
-  The script assumes you already have a server set up
-  All OCI commands are commands to the Oracle libraries
-  To get the file to work, you must place it somewhere where your
-  Apache server can run it, and you must rename it to have a ".php"
-  extension.  You must also change the username and password on the 
-  OCILogon below to be your ORACLE username and password -->
-
-
-
-<p>If you wish to reset the table, press the reset button. If this is the first time you're running this page, you MUST use reset</p>
-<form method="POST" action="customer.php">
-   
-<p><input type="submit" value="Reset" name="reset"></p>
-<p><input type="submit" value="run hardcoded queries" name="dostuff"></p>
-</form>
-
-<p>(Deliverable 8: a simple query)Search for games in the library:</p>
 
 <form method="POST" action="customer.php">
-<p><table>
-  <tr>
-    <td><font size="2">Game Genre</font></td>
-    <td><font size="2">Game Name</font></td>
-    <td><font size="2">Game ID</font></td>
-    <td><font size="2">Price</font></td>
-    <td><font size="2">Release Date</font></td>
-    <td><font size="2">Developer Name</font></td>
-    <td><font size="2">On-Sale Price</font></td>
-    </tr>
-  <tr>
-    <td>
-      <select name="gameGenre">
-      <option value="">Action</option>
-      <option value="">Survival Horror</option>
-      <option value="">Simulation</option>
-      <option value="">Strategy</option>
-      <option value="">Role-Playing</option>
-      <option value="">Sports</option>
-      <option value="">Adventure</option>
-      </select>
-    </td>
-    <td><input type="text" name="gameName" size="20"></td>
-    <td><input type="text" name="gameID" size="10"></td>
-    <td><input type="text" name="gamePrice" size="8"></td>
-    <td><input type="text" name="gameReleaseDate" size="15"></td>
-    <td><input type="text" name="gameDevName" size="20"></td>
-    <td><input type="text" name="gameSalePrice" size="16"></td>
+<div class="center"><p class="title">ANONYMOUS CUSTOMER</p>
+<table id="customerEmail" class="center">
+	<tr>
+    <td><font size="2">Please Enter Your Email:</font></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Search Game" name="searchGameSubmit"></p></td>
+		<td><input type="text" name="myEmail" size="30"></td>
   </tr>
+	<tr>
+		<td>
+		<input type="submit" value="Show All Purchases" name="showPurchases">
+		<input type="submit" value="My Cart" name="showCart">
+		<input type="submit" value="Show Customer Info" name="showCustomerInfo">
+		</td>
+	</tr>
 </table>
+<table id="customerEmail" class="center">
+	<tr>
+		<td>
+		<input type="submit" value="Show All Tables" name="showAll">
+		</td>
+	</tr>
+</table>
+</div>
 </form>
 
-<p> (Deliverable 9: a simple query)Add a game to shopping cart: </p>
+<div id="searchQuery">
+<p><font size="2">Deliverable 8: a simple query</font></p>
+<p> Search for games in the library:</p>
 <form method="POST" action="customer.php">
-<p><table>
+<p>
+<input name="newThread" type="button" value="Open Search Engine" 
+onclick="window.open('search.php')"/>
+</p>
+</form>
+</div>
+
+<div id="customerCartQuery">
+<h3>Shopping Cart Queries</h3>
+<p><font size="2">Deliverable 9: a simple query</font></p>
+<p> Add a game to shopping cart: </p>
+<form method="POST" action="customer.php">
+<table>
   <tr>
+		<td><font size="2">Customer Email</font></td>
     <td><font size="2">Game ID</font></td>
   </tr>
   <tr>
-    <td><input type="text" name="addGameToCartByID" size="12"></td>
+    <td><input type="text" name="addGameToCartEmail" size="20"></td>
+		<td><input type="text" name="addGameToCartGID" size="20"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Add Game" name="addGameToCartByID"></p></td>
+    <td><input type="submit" value="Add to Cart" name="addGameToCartSubmit"></td>
   </tr>
 </table>
-
 </form>
 
 <p> Remove a game from the shopping cart: </p>
 <form method="POST" action="customer.php">
 <!--refresh page when submit-->
 
-<p><table>
+<table>
   <tr>
+		<td><font size="2">Customer Email</font></td>
     <td><font size="2">Game ID</font></td>
   </tr>
   <tr>
-    <td><input type="text" name="removeGameFromCartByID" size="12"></td>
+		<td><input type="text" name="removeGameFromCartEmail" size="20"></td>
+    <td><input type="text" name="removeGameFromCartGID" size="20"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Remove Game" name="removeGameFromCartByID"></p></td>
+    <td><input type="submit" value="Remove From Cart" name="removeGameFromCartSubmit"></td>
   </tr>
-</table></p>
+</table>
 </form>
 
+<p> Clear the shopping cart: </p>
+<form method="POST" action="customer.php">
+<table>
+	<tr>
+    <td><font size="2">Customer Email</font></td>
+  </tr>
+  <tr>
+		<td><input type="text" name="clearCartEmail" size="20"></td>
+  </tr>
+	<tr>
+    <td><input type="submit" value="Clear Shopping Cart" name="clearCartSubmit"></td>
+  </tr>
+</table>
+</form>
+</div>
+
+<div id="customerPurchaseQuery">
+<h3>Purchase Queries</h3>
+<p> Purchase a game on the Shopping Cart: </p>
+<form method="POST" action="customer.php">
+<table>
+	<tr>
+		<td><font size="2">Customer Email</font></td>
+    <td><font size="2">Game ID</font></td>
+  </tr>
+  <tr>
+		<td><input type="text" name="purchaseEmail" size="20"></td>
+		<td><input type="text" name="purchaseGID" size="20"></td>
+  </tr>
+	<tr>
+    <td><input type="submit" value="$$$ PURCHASE $$$" name="purchaseSubmit"></td>
+  </tr>
+</table>
+</form>
+
+<p> Delete a game from my purchases: </p>
+<form method="POST" action="customer.php">
+<table>
+	<tr>
+		<td><font size="2">Customer Email</font></td>
+    <td><font size="2">Game ID</font></td>
+  </tr>
+  <tr>
+		<td><input type="text" name="deletePurchaseEmail" size="20"></td>
+		<td><input type="text" name="deletePurchaseGID" size="20"></td>
+  </tr>
+	<tr>
+    <td><input type="submit" value="Delete" name="deleteSubmit"></td>
+		<td><font size="2">This cannot be undone!</font></td>
+  </tr>
+</table>
+</form>
+</div>
+
+<div id="customerInfoQuery">
+<h3>Customer Information Queries</h3>
+<p> Update Customer Personal Information: </p>
+<form method="POST" action="customer.php">
+<table>
+	<tr>
+    <td><font size="2">Customer Email</font></td>
+  </tr>
+  <tr>
+    <td><input type="text" name="originalEmail" size="20"></td>
+  </tr>
+	<tr>
+    <td><font size="2">New Bank Account Information</font></td>
+  </tr>
+  <tr>
+		<td><input type="text" name="updateBank" size="20"></td>
+  </tr>
+	<tr>
+    <td><input type="submit" value="Update" name="updateCustomerSubmit"></td>
+  </tr>
+</table>
+</form>
+
+
+</div>
+
 <a href="steam.php">Back to home</a>
+</html>
 
 <?php
 
@@ -162,10 +238,34 @@ function executeBoundSQL($cmdstr, $list) {
 
 }
 
-function printResult($result) { //prints results from a select statement
-	echo "<br>Got data from table tab1:<br>";
-	echo "<table>";
-	echo "<tr><th>ID</th><th>Name</th><th>Gender</th></tr>";
+function printCartResult($result) { //prints results from a select statement
+	echo "<center><h2>Shopping Carts</h2></center>";
+	echo "<table id=\"cart\">";
+	echo "<tr><td>Game ID</td><td>Shopping Cart ID</td></tr>";
+
+	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+		echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>"; //or just use "echo $row[0]"
+	}
+	echo "</table>";
+
+}
+
+function printPurchasesResult($result) { //prints results from a select statement
+	echo "<center><h2>Purchases</h2></center>";
+	echo "<table id=\"purchases\">";
+	echo "<tr><td>Email</td><td>Game ID</td></tr>";
+
+	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+		echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>"; //or just use "echo $row[0]"
+	}
+	echo "</table>";
+
+}
+
+function printCustomersResult($result) { //prints results from a select statement
+	echo "<center><h2>Customers</h2></center>";
+	echo "<table id=\"customers\">";
+	echo "<tr><td>Email</td><td>Bank Account</td><td>Shopping Cart ID</td></tr>";
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
 		echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>"; //or just use "echo $row[0]"
@@ -188,23 +288,189 @@ if ($db_conn) {
 		OCICommit($db_conn);
 
 	} else
-		if (array_key_exists('insertsubmit', $_POST)) {
-			//Getting the values from user and insert data into the table
-			if(isset($_POST['gameGenre']) ) {
-				$varGenre = $_POST['gameGenre'];
-			}
-			$tuple = array (
-				":bind1" => $_POST['insNo'],
-				":bind2" => $_POST['insName'],
-        		":bind4" => $_POST['insGender']
-			);
-			$alltuples = array (
-				$tuple
-			);
-			executeBoundSQL("insert into tab1 values (:bind1, :bind2, :bind3)", $alltuples);
-			OCICommit($db_conn);
+	if (array_key_exists('showCart', $_POST)) {
+	
+	//Hardcoded query
+	$email = $_POST['myEmail'];
+	$result = executePlainSQL("SELECT * FROM ShoppingCarts WHERE Email='".$email."'");
+	$sid;
+	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+		$sid = $row[0]; // gets the SID
+	}
+	
+	// if ($_POST && $success) {
+	// 	//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+	// 	header("location: customer.php");
+	// }
+		// Select data...
+		$result = executePlainSQL("select * from AddRemoveFromCart WHERE SID=".$sid);
+		printCartResult($result);
 
-		} else
+
+} else if (array_key_exists('showPurchases', $_POST)) {
+
+		$result = executePlainSQL("SELECT * FROM Customers WHERE Email='".$_POST['myEmail']."'");
+		printCustomersResult($result);
+
+	}  else if (array_key_exists('showCustomerInfo', $_POST)) {
+
+		$result = executePlainSQL("SELECT * FROM Purchases WHERE Email='".$_POST['myEmail']."'");
+		printPurchasesResult($result);
+
+	} else if (array_key_exists('showAll', $_POST)) {
+
+		$result = executePlainSQL("select * from AddRemoveFromCart");
+		printCartResult($result);
+		$result = executePlainSQL("SELECT * FROM Customers");
+		printCustomersResult($result);
+		$result = executePlainSQL("SELECT * FROM Purchases");
+		printPurchasesResult($result);
+
+	} else if (array_key_exists('addGameToCartSubmit', $_POST)) {
+		
+		//Hardcoded query
+		$email = $_POST['addGameToCartEmail'];
+		$result = executePlainSQL("SELECT * FROM ShoppingCarts WHERE Email='".$email."'");
+		$sid;
+		while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+			$sid = $row[0]; // gets the SID
+		}
+		
+		$tuple = array (
+			":bind1" => $_POST['addGameToCartGID'],
+			":bind2" => $sid
+		);
+		$alltuples = array (
+			$tuple
+		);
+		executeBoundSQL("INSERT INTO AddRemoveFromCart
+			VALUES (:bind1, :bind2)", $alltuples);
+		OCICommit($db_conn);
+		// if ($_POST && $success) {
+		// 	//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+		// 	header("location: customer.php");
+		// }
+			// Select data...
+			$result = executePlainSQL("select * from AddRemoveFromCart WHERE SID=".$sid);
+			printCartResult($result);
+
+	} else if (array_key_exists('removeGameFromCartSubmit', $_POST)) {
+		
+		//Hardcoded query
+		$email = $_POST['removeGameFromCartEmail'];
+		$result = executePlainSQL("SELECT * FROM ShoppingCarts WHERE Email='".$email."'");
+		$sid;
+		while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+			$sid = $row[0]; // gets the SID
+		}
+		
+		$tuple = array (
+			":bind1" => $_POST['removeGameFromCartGID'],
+			":bind2" => $sid
+		);
+		$alltuples = array (
+			$tuple
+		);
+		executeBoundSQL("DELETE FROM AddRemoveFromCart
+			WHERE GID=:bind1 and SID=:bind2", $alltuples);
+		OCICommit($db_conn);
+		// if ($_POST && $success) {
+		// 	//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+		// 	header("location: customer.php");
+		// }
+			// Select data...
+			$result = executePlainSQL("select * from AddRemoveFromCart WHERE SID=".$sid);
+			printCartResult($result);
+
+	} else if (array_key_exists('clearCartSubmit', $_POST)) {
+		
+		//Hardcoded query
+		$email = $_POST['clearCartEmail'];
+		$result = executePlainSQL("SELECT * FROM ShoppingCarts WHERE Email='".$email."'");
+		$sid;
+		while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+			$sid = $row[0]; // gets the SID
+		}
+		
+		$tuple = array (
+			":bind1" => $sid
+		);
+		$alltuples = array (
+			$tuple
+		);
+		executeBoundSQL("DELETE FROM AddRemoveFromCart
+			WHERE SID=:bind1", $alltuples);
+		OCICommit($db_conn);
+		// if ($_POST && $success) {
+		// 	//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+		// 	header("location: customer.php");
+		// }
+			// Select data...
+			$result = executePlainSQL("select * from AddRemoveFromCart WHERE SID=".$sid);
+			printCartResult($result);
+
+	} else if (array_key_exists('purchaseSubmit', $_POST)) {
+		$email = $_POST['purchaseEmail'];
+		$tuple = array (
+			":bind1" => $email,
+			":bind2" => $_POST['purchaseGID']
+		);
+		$alltuples = array (
+			$tuple
+		);
+		executeBoundSQL("INSERT INTO Purchases
+		VALUES (:bind1, :bind2)", $alltuples);
+		OCICommit($db_conn);
+		// if ($_POST && $success) {
+		// 	//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+		// 	header("location: customer.php");
+		// }
+			// Select data...
+			$result = executePlainSQL("SELECT * FROM Purchases WHERE Email='".$email."'");
+			printPurchasesResult($result);
+
+	} else if (array_key_exists('deleteSubmit', $_POST)) {
+		$email = $_POST['deletePurchaseEmail'];
+		$tuple = array (
+			":bind1" => $email,
+			":bind2" => $_POST['deletePurchaseGID']
+		);
+		$alltuples = array (
+			$tuple
+		);
+		executeBoundSQL("DELETE FROM Purchases
+		WHERE Email=:bind1 and GID=:bind2", $alltuples);
+		OCICommit($db_conn);
+		// if ($_POST && $success) {
+		// 	//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+		// 	header("location: customer.php");
+		// }
+			// Select data...
+			$result = executePlainSQL("SELECT * FROM Purchases WHERE Email='".$email."'");
+			printPurchasesResult($result);
+
+	} else if (array_key_exists('updateCustomerSubmit', $_POST)) {
+		$email = $_POST['originalEmail'];
+		$tuple = array (
+			":bind1" => $email,
+			":bind2" => $_POST['updateBank']
+		);
+		$alltuples = array (
+			$tuple
+		);
+		executeBoundSQL("UPDATE Customers SET BankAccount=:bind2
+			WHERE Email=:bind1", $alltuples);
+		OCICommit($db_conn);
+		// if ($_POST && $success) {
+		// 	//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+		// 	header("location: customer.php");
+		// }
+			// Select data...
+			$result = executePlainSQL("SELECT * FROM Customers WHERE Email='".$email."'");
+			printCustomersResult($result);
+
+	}
+	else
 			if (array_key_exists('updatesubmit', $_POST)) {
 				// Update tuple using data from user
 				$tuple = array (
@@ -258,14 +524,6 @@ if ($db_conn) {
 					OCICommit($db_conn);
 				}
 
-	if ($_POST && $success) {
-		//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-		header("location: developer.php");
-	} else {
-		// Select data...
-		$result = executePlainSQL("select * from tab1");
-		printResult($result);
-	}
 
 	//Commit to save changes...
 	OCILogoff($db_conn);

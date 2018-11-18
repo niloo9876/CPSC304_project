@@ -132,11 +132,12 @@ commit;
 
 CREATE TABLE OnSaleList
     (EventIndex  INTEGER,
-     GID         INTEGER,
+     OGID        INTEGER,
      SalePrice   DECIMAL(19,4),
      StartDate   DATE,
      EndDate     DATE,
      PRIMARY KEY (EventIndex),
+
      CONSTRAINT OnSaleListFK_Game
      FOREIGN KEY (GID) REFERENCES Games(GID)
                        ON DELETE CASCADE);
@@ -146,7 +147,7 @@ grant select on OnSaleList to public;
 commit;
 
 CREATE TABLE AddRemoveFromCart
-    (GID         INTEGER,
+    (CGID        INTEGER,
      SID         INTEGER,
      PRIMARY KEY (GID, SID),
      CONSTRAINT AddRemoveFromCartFK_Games
