@@ -307,12 +307,12 @@ if ($db_conn) {
 		printCartResult($result);
 
 
-} else if (array_key_exists('showPurchases', $_POST)) {
+} else if (array_key_exists('showCustomerInfo', $_POST)) {
 
 		$result = executePlainSQL("SELECT * FROM Customers WHERE Email='".$_POST['myEmail']."'");
 		printCustomersResult($result);
 
-	}  else if (array_key_exists('showCustomerInfo', $_POST)) {
+	}  else if (array_key_exists('showPurchases', $_POST)) {
 
 		$result = executePlainSQL("SELECT * FROM Purchases WHERE Email='".$_POST['myEmail']."'");
 		printPurchasesResult($result);
