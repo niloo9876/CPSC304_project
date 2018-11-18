@@ -64,6 +64,11 @@ table.center {
     background-color:#e9fce9;
 }
 
+#allMemberDivs {
+    padding:2em;
+    background-color:#ffe6e6;
+}
+
 table {
     background-color:lightgrey;
 }
@@ -99,6 +104,12 @@ table {
 }
 
 #customers {
+    border-spacing: 20px 5px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+table.results {
     border-spacing: 20px 5px;
     margin-left:auto;
     margin-right:auto;
