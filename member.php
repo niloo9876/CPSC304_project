@@ -21,11 +21,11 @@
     </div>
 </form>
 
-
+<div id="allMemberDivs">
 <p>Add another member as friend:</p>
 
 <form method="POST" action="member.php">
-<p><table>
+<table>
   <tr>
     <td><font size="2">My Email:</font></td>
     <td><font size="2">My friend's Email:</font></td>
@@ -35,15 +35,17 @@
     <td><input type="text" name="addFriendOtherEmail" size="20"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Add Friend" name="AddFriend"></p></td>
+    <td><input type="submit" value="Add Friend" name="AddFriend"></td>
   </tr>
 </table>
 </form>
+</div>
 
+<div id="allMemberDivs">
 <p> Update My Username and Password: </p>
 <form method="POST" action="member.php">
 
-    <p><table>
+    <table>
         <tr>
             <td><font size="2">My Email</font></td>
         </tr>
@@ -59,14 +61,16 @@
             <td><input type="text" name="updatePassword" size="30"></td>
         </tr>
         <tr>
-            <td><input type="submit" value="Update My Information" name="updateMyInformation"></p></td>
+            <td><input type="submit" value="Update My Information" name="updateMyInformation"></td>
     </tr>
-    </table></p>
+    </table>
 </form>
+</div>
 
+<div id="allMemberDivs">
 <p> Add a game to wishlist by ID: </p>
 <form method="POST" action="member.php">
-<p><table>
+<table>
   <tr>
     <td><font size="2">Game ID</font></td>
   </tr>
@@ -80,7 +84,7 @@
     <td><input type="text" name="toWishListWID" size="20"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Add Game To Wishlist" name="addGameToWishlist"></p></td>
+    <td><input type="submit" value="Add Game To Wishlist" name="addGameToWishlist"></td>
   </tr>
 </table>
 
@@ -90,7 +94,7 @@
 <form method="POST" action="member.php">
 <!--refresh page when submit-->
 
-<p><table>
+<table>
   <tr>
     <td><font size="2">My WIshlist ID</font></td>
   </tr>
@@ -98,28 +102,43 @@
     <td><input type="text" name="WID" size="12"></td>
   </tr>
   <tr>
-    <td><input type="submit" value="Search Games" name="searchOnSaleGamesByWID"></p></td>
+    <td><input type="submit" value="Search Games" name="searchOnSaleGamesByWID"></td>
   </tr>
-</table></p>
+</table>
 </form>
 
 <p> (Deliverable 6: 2 table join query) Search For Certain Developer's Game In My Wishlist: </p>
 <form method="POST" action="member.php">
     <!--refresh page when submit-->
 
-    <p><table>
+    <table>
         <tr>
             <td><font size="2">Developer's Name</font></td>
+            <td><font size="2">Wishlist ID</font></td>
         </tr>
         <tr>
-            <td><input type="text" name="developerName" size="12"></td>
+            <td><input type="text" name="searchDev" size="12"></td>
+            <td><input type="text" name="searchWID" size="12"></td>
         </tr>
         <tr>
-            <td><input type="submit" value="Search Games" name="searchDevGame"></p></td>
+            <td><input type="submit" value="Search Games" name="searchDevGame"></td>
     </tr>
-    </table></p>
+    </table>
 </form>
+</div>
 
+<div id="allMemberDivs">
+<p><font size="2">Deliverable 11: CREATE VIEW</font></p>
+<p> See a list of all developers on the platform: </p>
+<form method="POST" action="member.php">
+    <!--refresh page when submit-->
+    <table>
+        <tr>
+            <td><input type="submit" value="Search Games" name="devViewSubmit"></td>
+        </tr>
+    </table>
+</form>
+</div>
 
 
 <a href="steam.php">Back to home</a>
@@ -131,7 +150,7 @@
 //html; it's now parsing PHP
 
 $success = True; //keep track of errors so it redirects the page only if there are no errors
-$db_conn = OCILogon("ora_v7e0b", "a58730136", "dbhost.ugrad.cs.ubc.ca:1522/ug");
+$db_conn = OCILogon("ora_n9y0b", "a57734162", "dbhost.ugrad.cs.ubc.ca:1522/ug");
 
 function executePlainSQL($cmdstr) { //takes a plain (no bound variables) SQL command and executes it
     //echo "<br>running ".$cmdstr."<br>";
@@ -198,99 +217,84 @@ function executeBoundSQL($cmdstr, $list) {
 }
 
 function printfriendsresult($result) { //prints results from a select statement
-    echo "<br>Got data from table Friends:<br>";
-    echo "<div style=\"background-color:lightgrey\">";
-    echo "<table style=\"border-spacing: 20px 0;\">";
+    echo "<center><h2>Friends List</h2></center>";
+    echo "<table class=\"results\">";
     echo "<tr><td>MyEmail</td><td>FriendEmail</td></tr>";
 
     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
         echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
     }
     echo "</table>";
-    echo "</div>";
 
 }
 
 function printmembersresult($result) {
-    echo "<br>Got data from table Members:<br>";
-    echo "<div style=\"background-color:lightgrey\">";
-    echo "<table style=\"border-spacing: 20px 0;\">";
+    echo "<center><h2>Members</h2></center>";
+    echo "<table class=\"results\">";
     echo "<tr><td>Email</td><td>Username</td><td>Password</td><td>Wid</td></tr>";
 
     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
         echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td><td>" . $row[3] . "</td></tr>" ; //or just use "echo $row[0]"
     }
     echo "</table>";
-    echo "</div>";
 }
 
 function printwishlistsresult($result) { //prints results from a select statement
-    echo "<br>Got data from table AddRemoveFromWishlist:<br>";
-    echo "<div style=\"background-color:lightgrey\">";
-    echo "<table style=\"border-spacing: 20px 0;\">";
+    echo "<center><h2>Wishlists</h2></center>";
+    echo "<table class=\"results\">";
     echo "<tr><td>Game ID</td><td>WIshlist ID</td></tr>";
 
     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
         echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
     }
     echo "</table>";
-    echo "</div>";
 
 }
 
 function printsearchsalesresult($result) { //prints results from a select statement
-    echo "<br>These games in your wishlist is currently onsale:<br>";
-    echo "<div style=\"background-color:lightgrey\">";
-    echo "<table style=\"border-spacing: 20px 0;\">";
+    echo "<center><h2>These games in your wishlist is currently onsale</h2></center>";
+    echo "<table class=\"results\">";
     echo "<tr><td>Game Name</td></tr>";
 
     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
         echo "<tr><td>" . $row[0] . "</td></tr>" ; //or just use "echo $row[0]"
     }
     echo "</table>";
-    echo "</div>";
 
 }
 
-function printsearchdevresult($result) { //prints results from a select statement
-    echo "<br>These games in your wishlist(ID:1) is by capcom:<br>";
-    echo "<div style=\"background-color:lightgrey\">";
-    echo "<table style=\"border-spacing: 20px 0;\">";
+function printsearchdevresult($result, $WID, $devName) { //prints results from a select statement
+    echo "<center><h2>These games in your wishlist with ID: ".$WID." are made by ".$devName."</h2></center>";
+    echo "<table class=\"results\">";
     echo "<tr><td>Game Name</td></tr>";
 
     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
         echo "<tr><td>" . $row[0] . "</td></tr>" ; //or just use "echo $row[0]"
     }
     echo "</table>";
-    echo "</div>";
 
 }
 
-function printDevResult($result) { //prints results from a select statement
-    echo "<br>Got data from table Developers:<br>";
-    echo "<div style=\"background-color:lightgrey\">";
-    echo "<table style=\"border-spacing: 20px 0;\">";
-    echo "<tr><td>Developer Name</td><td>Bank Account</td></tr>";
+function printDevViewResult($result) {
+    echo "<center><h2>A view of all developers</h2></center>";
+    echo "<table class=\"results\">";
+    echo "<tr><th>Developer Name</th></tr>";
 
     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
+        echo "<tr><td>" . $row[0] . "</td></tr>" ; //or just use "echo $row[0]"
     }
     echo "</table>";
-    echo "</div>";
-
 }
 
 function printviewsresult($result) {
-    echo "<br>A view of capcom games:<br>";
-    echo "<div style=\"background-color:lightgrey\">";
-    echo "<table style=\"border-spacing: 20px 0;\">";
-    echo "<tr><td>Game ID</td><td>WIshlist ID</td></tr>";
+    echo "<center><h2>Deliverable 11: A view of All Games by Capcom</h2></center>";
+    echo "<table class=\"results\">";
+    echo "<tr><td>Game Name</td><td>Developer Name</td></tr>";
 
     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
         echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
     }
     echo "</table>";
-    echo "</div>";
 }
 
 // Connect Oracle...
@@ -312,6 +316,7 @@ if ($db_conn) {
             // if(isset($_POST[gameGenre]) ) {
             // 	$varGenre = $_POST[gameGenre];
             // }
+            $myEmail = $_POST['addFriendMyEmail'];
             $tuple = array (
                 ":bind1" => $_POST['addFriendMyEmail'],
                 ":bind2" => $_POST['addFriendOtherEmail']
@@ -320,15 +325,11 @@ if ($db_conn) {
                 $tuple
             );
             executeBoundSQL("INSERT INTO Friends
-         VALUES (:bind1, :bind2)", $alltuples);
+                VALUES (:bind1, :bind2)", $alltuples);
             OCICommit($db_conn);
 
-            if ($_POST && $success) {
-                //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-                header("location: member.php");
-            }
             // Select data...
-            $result = executePlainSQL("select MyEmail, FriendEmail from games");
+            $result = executePlainSQL("select * from Friends where MyEmail='".$myEmail."'");
             printfriendsresult($result);
 
             //Commit to save changes...
@@ -350,47 +351,14 @@ if ($db_conn) {
              SET Username=:bind1, Password=:bind2
              WHERE Email=:bind3", $alltuples);
                 OCICommit($db_conn);
-                if ($_POST && $success) {
-                    //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-                    header("location: member.php");
-                }
+
                 // Select data...
-                $result = executePlainSQL("select Email, Username, Password, Wid from Members");
+                $result = executePlainSQL("select * from Members where Email='".$_POST['MyEmail']."'");
                 printmembersresult($result);
                 //Commit to save changes...
                 OCILogoff($db_conn);
             }
-
-        else
-            if (array_key_exists('AddFriend', $_POST)) {
-                //Getting the values from user and insert game into the table
-                // if(isset($_POST[gameGenre]) ) {
-                // 	$varGenre = $_POST[gameGenre];
-                // }
-                $tuple = array (
-                    ":bind1" => $_POST['addFriendMyEmail'],
-                    ":bind2" => $_POST['addFriendOtherEmail']
-                );
-                $alltuples = array (
-                    $tuple
-                );
-                executeBoundSQL("INSERT INTO Friends
-         VALUES (:bind1, :bind2)", $alltuples);
-                OCICommit($db_conn);
-
-                if ($_POST && $success) {
-                    //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-                    header("location: member.php");
-                }
-                // Select data...
-                $result = executePlainSQL("select MyEmail, FriendEmail from games");
-                printfriendsresult($result);
-
-                //Commit to save changes...
-                OCILogoff($db_conn);
-            }
-
-        else
+            else
             if (array_key_exists('addGameToWishlist', $_POST)) {
                 // Update existing game using data from user
                 $tuple = array (
@@ -404,10 +372,9 @@ if ($db_conn) {
          VALUES (:bind1, :bind2)", $alltuples);
                 OCICommit($db_conn);
 
-                if ($_POST && $success) {
-                    //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-                    header("location: member.php");
-                }
+
+                $result = executePlainSQL("select * from AddRemoveFromWishlist where WID=".$_POST['toWishListWID']);
+                printwishlistsresult($result);
 
                 //Commit to save changes...
                 OCILogoff($db_conn);
@@ -430,16 +397,18 @@ if ($db_conn) {
                 else
                     if (array_key_exists('searchDevGame', $_POST)) {
                         //Getting the values from user and insert data into the table
-                        $tuple = array(
-                            ":bind1" => $_POST['WID']
-                        );
-                        $alltuples = array(
-                            $tuple
-                        );
+                        $dev = $_POST['searchDev'];
+                        $wid = $_POST['searchWID'];
                         $result = executePlainSQL("select name from Games join Addremovefromwishlist
                                                           on wgid = gid
-                                                          where wid = 1 and devname = 'Capcom'");
-                        printsearchdevresult($result);
+                                                          where wid = ".$wid." and devname = '".$dev."'");
+                        printsearchdevresult($result, $wid, $dev);
+                    }
+                    else
+                    if (array_key_exists('devViewSubmit', $_POST)) {
+                        //Getting the values from user and insert data into the table
+                        $result = executePlainSQL("select * from devNameOnly");
+                        printDevViewResult($result);
                     }
 
                 else
