@@ -15,71 +15,86 @@
   extension.  You must also change the username and password on the 
   OCILogon below to be your ORACLE username and password -->
 
-<p>If you wish to reset the table, press the reset button. If this is the first time you're running this page, you MUST use reset</p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="style.php" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans" rel="stylesheet">
+  </head>
+
 <form method="POST" action="search.php">
-   
-  <p><input type="submit" value="Reset" name="reset"></p>
+<div class="center"><p class="title">SEARCH ENGINE</p>
+<p><input type="submit" value="Show all the available games" name="showGames"></p>
+</div>
 </form>
 
-<!----> 
-<p>Search for games within a certain genre </p>
-<p>
-  <font size="2"> Genre</font>
-</p>
 
+<!----> 
+<div id="searchQuery">
+<p>Search for games within a certain genre </p>
 <form method="POST" action="search.php">
-   <p>
-      <input type="text" name="genre" size="10">
-      <input type="submit" value="Search" name="genreSearch">
-    </p>
+<p><table>
+  <tr>
+    <td><font size="2"> Genre</font></td>
+  </tr>
+  <tr>
+   <td>
+      <select name="gameGenre">
+        <option value="Action-Adventure">Action-Adventure</option>
+        <option value="Action">Action</option>
+        <option value="Survival Horror">Survival Horror</option>
+        <option value="Simulation">Simulation</option>
+        <option value="Strategy">Strategy</option>
+        <option value="Role-Playing">Role-Playing</option>
+        <option value="Sports">Sports</option>
+        <option value="Adventure">Adventure</option>
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td><input type="submit" value="Search" name="genreSearch"></td>
+  </tr>
+</table></p>
 </form>
 
 <!----> 
 <p>Search for games released by certain developers</p>
-<p>
-  <font size="2"> Developer's name</font>
-</p>
-
 <form method="POST" action="search.php">
-   <p>
-      <input type="text" name="devName" size="10">
-      <input type="submit" value="Search" name="devSearch">
-    </p>
+<p><table>
+  <tr>
+    <td><font size="2"> Developer's name</font></td>
+  </tr>
+  <tr>
+    <td><input type="text" name="devName" size="10"></td>
+  </tr>
+  <tr>
+      <td><input type="submit" value="Search" name="devSearch"><td>
+  </tr>  
+  </table></p>
 </form>
 
 <!----> 
 <p>Search for games released between a given date range</p>
-<p>
-  <font size="2"> 
-    From date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    To date
-  </font>
-</p>
-
 <form method="POST" action="search.php">
-   <p>
-      <input type="date" name="fromD" size="10">
-      <input type="date" name="toD" size="10">
-      <input type="submit" value="Search" name="dateSearch">
-    </p>
+<p><table>
+  <tr>
+    <td><font size="2"> From date</font></td>
+    <td><font size="2"> To date</font></td>
+  </tr>
+  <tr>
+    <td><input type="date" name="fromD" size="10"></td>
+    <td><input type="date" name="toD" size="10"></td>
+  </tr>
+  <tr>
+      <td><input type="submit" value="Search" name="dateSearch"></td>
+  </tr>
+  </table></p>
 </form>
+</div>
 
-<!----> 
-<p> Update the name by inserting the old and new values below: </p>
-<p><font size="2"> Old Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-New Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Age</font></p>
-<form method="POST" action="search.php">
-<!--refresh page when submit-->
+<a href="steam.php">Back to home</a>
 
-   <p><input type="text" name="oldName" size="6"><input type="text" name="newName" 
-size="18"><input type="text" name="insAge" size="3">
-<!--define two variables to pass the value-->
-      
-<input type="submit" value="update" name="updatesubmit"></p>
-<input type="submit" value="run hardcoded queries" name="dostuff"></p>
-</form>
-
+</html>
 <?php
 
 //this tells the system that it's no longer just parsing 
@@ -228,7 +243,7 @@ if ($db_conn) {
 		header("location: search.php");
 	} else {
 		// Select data...
-		$result = executePlainSQL("select * from games");
+		$result = executePlainSQL("select * from Games");
 		printResult($result);
 	}
 
