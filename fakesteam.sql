@@ -46,6 +46,7 @@ CREATE TABLE Games
      ReleaseDate DATE,
      DevName     VARCHAR(40) NOT NULL,
      PRIMARY KEY (GID),
+     CONSTRAINT GamesFK_Developers
      FOREIGN KEY (DevName)   REFERENCES Developers(Name)
                              ON DELETE CASCADE
                              -- ON UPDATE CASCADE
@@ -91,23 +92,28 @@ ADD CONSTRAINT CartFK
 FOREIGN KEY (Email) REFERENCES Customers(Email)
                          ON DELETE CASCADE
                          DEFERRABLE INITIALLY DEFERRED;
-                         
+
 
 commit;
 
 CREATE TABLE Members
     (Email       VARCHAR(40),
+     MID         INTEGER,
      Username    VARCHAR(20),
      Password    VARCHAR(20),
      WID         INTEGER UNIQUE,
-     PRIMARY KEY (Email));
+     PRIMARY KEY (Email,MID),
+     CONSTRAINT MembersFK_Customer
+     FOREIGN KEY (Email) REFERENCES Customers(Email)
+                         ON DELETE CASCADE
+     );
 
 grant select on Members to public;
 
 commit;
 
-CREATE TABLE Wishlists         
-    (WID         INTEGER UNIQUE,       
+CREATE TABLE Wishlists
+    (WID         INTEGER UNIQUE,
      Email       VARCHAR(40) NOT NULL,
      PRIMARY KEY (WID, Email));
 
@@ -117,7 +123,7 @@ ALTER TABLE Members
 ADD CONSTRAINT MembersFK
 FOREIGN KEY (WID) REFERENCES Wishlists(WID) DEFERRABLE INITIALLY DEFERRED;
 
-ALTER TABLE Wishlists   
+ALTER TABLE Wishlists
 ADD CONSTRAINT WishlistsFK
 FOREIGN KEY (Email) REFERENCES Members(Email)
                          ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
@@ -131,6 +137,7 @@ CREATE TABLE OnSaleList
      StartDate   DATE,
      EndDate     DATE,
      PRIMARY KEY (EventIndex),
+     CONSTRAINT OnSaleListFK_Game
      FOREIGN KEY (GID) REFERENCES Games(GID)
                        ON DELETE CASCADE);
 
@@ -142,8 +149,10 @@ CREATE TABLE AddRemoveFromCart
     (GID         INTEGER,
      SID         INTEGER,
      PRIMARY KEY (GID, SID),
+     CONSTRAINT AddRemoveFromCartFK_Games
      FOREIGN KEY (GID) REFERENCES Games(GID)
                        ON DELETE CASCADE,
+     CONSTRAINT AddRemoveFromCartFK_ShoppingCarts
      FOREIGN KEY (SID) REFERENCES ShoppingCarts(SID)
                        ON DELETE CASCADE);
 
@@ -151,12 +160,14 @@ grant select on AddRemoveFromCart to public;
 
 commit;
 
-CREATE TABLE AddRemoveFromWishlist 
+CREATE TABLE AddRemoveFromWishlist
     (GID         INTEGER,
      WID         INTEGER,
      PRIMARY KEY (GID, WID),
+     CONSTRAINT AddRemoveFromWishlistFK_Games
      FOREIGN KEY (GID) REFERENCES Games(GID)
                        ON DELETE CASCADE,
+     CONSTRAINT AddRemoveFromWishlistFK_Wishlists
      FOREIGN KEY (WID) REFERENCES Wishlists(WID)
                        ON DELETE CASCADE);
 
@@ -168,10 +179,12 @@ CREATE TABLE Purchases
     (Email       VARCHAR(40),
      GID         INTEGER,
      PRIMARY KEY (Email, GID),
+     CONSTRAINT PurchasesFK_Customers
      FOREIGN KEY (Email) REFERENCES Customers(Email)
                          ON DELETE CASCADE
                          -- ON UPDATE CASCADE
                          ,
+     CONSTRAINT PurcahsesFK_Games
      FOREIGN KEY (GID)   REFERENCES Games(GID)
                          ON DELETE CASCADE);
 
@@ -179,12 +192,27 @@ grant select on Purchases to public;
 
 commit;
 
+CREATE TRIGGER removePurchasedGameFromCart
+AFTER INSERT on Purchases
+FOR EACH ROW
+BEGIN
+DELETE FROM AddRemoveFromCart arfc
+where
+arfc.GID = :new.GID
+and
+arfc.SID = (select SID from Customers c where c.email = :new.Email);
+END;
+/
+
+
 CREATE TABLE Friends
     (MyEmail     VARCHAR(40),
      FriendEmail VARCHAR(40),
      PRIMARY KEY (MyEmail, FriendEmail),
+     CONSTRAINT FriendsFK_MyEmail
      FOREIGN KEY (MyEmail)     REFERENCES Members(Email)
                                ON DELETE CASCADE,
+     CONSTRAINT FriendsEK_FriendEmail
      FOREIGN KEY (FriendEmail) REFERENCES Members(Email)
                                ON DELETE CASCADE);
 
