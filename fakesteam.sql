@@ -188,6 +188,17 @@ BEGIN
 END;
 /
 
+CREATE TRIGGER removePurchasedGameFromWL
+AFTER INSERT ON Purchases
+FOR EACH ROW
+BEGIN
+    DELETE FROM AddRemoveFromWishlist arfw
+    where arfw.WGID = :new.GID
+    and
+    arfw.WID = (select WID from Members m where m.email = :new.Email);
+END;
+/
+
 commit;
 
 CREATE TABLE Friends
