@@ -170,10 +170,10 @@ function executeBoundSQL($cmdstr, $list) {
 function printResult($result) { //prints results from a select statement
 	echo "<br>Found games that match your search<br>";
 	echo "<table>";
-	echo "<tr><th>Game ID</th><th>Name</th><th>Genre</th><th>Price</th><th>ReleaseDate</th><th>DevName</th></th><th>SalePrice</th></tr>";
+	echo "<tr><td>Game ID</td><td>Name</td><td>Genre</td><td>Price</td><td>ReleaseDate</td><td>DevName</td></tr>";
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-		echo "<tr><td>" . $row[2] . "</td><td>" . $row[1] . "</td><td>" . $row[0] . "</td><td>" . $row[3] . "</td><td>" . $row[4] . "</td><td>" . $row[5] . "</td><td>" . $row[6] . "</td></tr>"; 
+		echo "<tr><td>" . $row[2] . "</td><td>" . $row[1] . "</td><td>" . $row[0] . "</td><td>" . $row[3] . "</td><td>" . $row[4] . "</td><td>" . $row[5] . "</td></tr>"; 
 	}
 	echo "</table>";
 
@@ -182,17 +182,7 @@ function printResult($result) { //prints results from a select statement
 // Connect Oracle...
 if ($db_conn) {
 
-	if (array_key_exists('reset', $_POST)) {
-		// Drop old table...
-		echo "<br> dropping table <br>";
-		executePlainSQL("Drop table tab1");
-
-		// Create new table...
-		echo "<br> creating new table <br>";
-		executePlainSQL("create table tab1 (nid number, name varchar2(30), age number, primary key (nid))");
-		OCICommit($db_conn);
-
-	} else if (array_key_exists('genreSearch', $_POST)) {
+	if (array_key_exists('genreSearch', $_POST)) {
 		// Search the game table for specific genre 
 		$tuple = array (":bind1" => $_POST['genre']);
 		$alltuples = array ($tuple);
@@ -215,7 +205,7 @@ if ($db_conn) {
       ":bind2" => $_POST['toD']
     );
     $alltuples = array ($tuple);
-    $result = executeBoundSQL("select * from Games where SalePrice>=:bind1 and SalePrice<=:bind1", $alltuples);
+    $result = executeBoundSQL("select * from Games where Price>=:bind1 and Price<=:bind1", $alltuples);
     printResult($result);
     OCICommit($db_conn);
 
@@ -229,15 +219,21 @@ if ($db_conn) {
     $result = executeBoundSQL("select * from Games where ReleaseDate>=:bind1 and ReleaseDate<=:bind1", $alltuples);
     printResult($result);
     OCICommit($db_conn);
-
+// EDIT THIS !!!! TODO
   } else if (array_key_exists('onSaleSearch', $_POST)) {
     // Search the game table for games that are on sale
     $result = executePlainSQL("select * from Games where SalePrice < Price");
     printResult($result);
     OCICommit($db_conn);
-    
-  }
+    // TODO
+  } else if(array_key_exists('showGames', $_POST)) {
+    $result = executePlainSQL("select * from Games");
+    printResult($result);
 
+    //Commit to save changes...
+	  OCILogoff($db_conn);
+  }
+/*
 	if ($_POST && $success) {
 		//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
 		header("location: search.php");
@@ -248,7 +244,8 @@ if ($db_conn) {
 	}
 
 	//Commit to save changes...
-	OCILogoff($db_conn);
+  OCILogoff($db_conn);
+  */
 } else {
 	echo "cannot connect";
 	$e = OCI_Error(); // For OCILogon errors pass no handle
