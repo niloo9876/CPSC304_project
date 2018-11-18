@@ -126,26 +126,26 @@ commit;
 
 CREATE TABLE OnSaleList
     (EventIndex  INTEGER,
-     OGID         INTEGER,
+     OGID        INTEGER,
      SalePrice   DECIMAL(19,4),
      StartDate   DATE,
      EndDate     DATE,
      PRIMARY KEY (EventIndex),
      FOREIGN KEY (OGID) REFERENCES Games(GID)
-                       ON DELETE CASCADE);
+                        ON DELETE CASCADE);
 
 grant select on OnSaleList to public;
 
 commit;
 
 CREATE TABLE AddRemoveFromCart
-    (CGID         INTEGER,
+    (CGID        INTEGER,
      SID         INTEGER,
      PRIMARY KEY (CGID, SID),
      FOREIGN KEY (CGID) REFERENCES Games(GID)
-                       ON DELETE CASCADE,
-     FOREIGN KEY (SID) REFERENCES ShoppingCarts(SID)
-                       ON DELETE CASCADE);
+                        ON DELETE CASCADE,
+     FOREIGN KEY (SID)  REFERENCES ShoppingCarts(SID)
+                        ON DELETE CASCADE);
 
 grant select on AddRemoveFromCart to public;
 
@@ -153,10 +153,10 @@ commit;
 
 CREATE TABLE AddRemoveFromWishlist 
     (WGID         INTEGER,
-     WID         INTEGER,
+     WID          INTEGER,
      PRIMARY KEY (WGID, WID),
      FOREIGN KEY (WGID) REFERENCES Games(GID)
-                       ON DELETE CASCADE,
+                        ON DELETE CASCADE,
      FOREIGN KEY (WID) REFERENCES Wishlists(WID)
                        ON DELETE CASCADE);
 
@@ -356,9 +356,6 @@ VALUES (3,1003,7.99,'2018-11-11', '2018-12-12');
 INSERT INTO OnSaleList
 VALUES (4,1004,7.99,'2018-11-11', '2018-12-12');
 
-INSERT INTO OnSaleList
-VALUES (4,1014,0.99,'2018-11-11', '2018-12-12');
-
 INSERT INTO ShoppingCarts
 VALUES (1,'smithbbb@hotmail.com');
 
@@ -393,10 +390,7 @@ INSERT INTO AddRemoveFromCart
 VALUES (1012,3);
 
 INSERT INTO AddRemoveFromWishlist
-VALUES (1001,1);
-
-INSERT INTO AddRemoveFromWishlist
-VALUES (1004,1);
+VALUES (1013,1);
 
 INSERT INTO AddRemoveFromWishlist
 VALUES (1014,1);
