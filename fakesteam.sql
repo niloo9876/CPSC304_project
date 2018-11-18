@@ -1,3 +1,6 @@
+drop table Reviews;
+-- cascade delete from games
+
 drop table Friends;
 -- cascade delete from members
 
@@ -31,28 +34,9 @@ drop table Members cascade constraints;
 drop table Wishlists cascade constraints;
 -- cascade delete from members
 
-drop table Reviews;
--- cascade delete from games
-
 drop view capcomgame;
 
-create view capcomgame
-as select name, devname from games where devname = 'Capcom';
-
-CREATE TABLE Reviews
-    (RID        INTEGER,
-    Rating      INTEGER ,
-    GID         INTEGER ,
-    Intro       VARCHAR(80),
-    Link        VARCHAR(80),
-    PRIMARY KEY (RID),
-    FOREIGN KEY (GID)   REFERENCES Games(GID)
-                        ON DELETE CASCADE);
-
-grant select on Reviews to public;
-
-commit;
-
+drop view devNameOnly;
 
 CREATE TABLE Developers
     (Name        VARCHAR(40),
@@ -234,6 +218,20 @@ CREATE TABLE Friends
                                ON DELETE CASCADE);
 
 grant select on Friends to public;
+
+commit;
+
+CREATE TABLE Reviews
+    (RID        INTEGER,
+    Rating      INTEGER ,
+    GID         INTEGER ,
+    Intro       VARCHAR(80),
+    Link        VARCHAR(80),
+    PRIMARY KEY (RID),
+    FOREIGN KEY (GID)   REFERENCES Games(GID)
+                        ON DELETE CASCADE);
+
+grant select on Reviews to public;
 
 commit;
 
@@ -541,5 +539,11 @@ VALUES ('billgates@gmail.com','sundarpichai@gmail.com');
 
 INSERT INTO Friends
 VALUES ('billgates@gmail.com','elonmusk@gmail.com');
+
+create view capcomgame
+as select name, devname from games where devname = 'Capcom';
+
+create view devNameOnly
+as select unique name from Developers;
 
 COMMIT;
