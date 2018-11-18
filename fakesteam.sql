@@ -177,6 +177,17 @@ CREATE TABLE Purchases
 
 grant select on Purchases to public;
 
+CREATE TRIGGER removePurchasedGameFromCart
+AFTER INSERT ON Purchases
+FOR EACH ROW
+BEGIN
+    DELETE FROM AddRemoveFromCart arfc
+    where arfc.CGID = :new.GID
+    and
+    arfc.SID = (select SID from Customers c where c.email = :new.Email);
+END;
+/
+
 commit;
 
 CREATE TABLE Friends
@@ -296,6 +307,18 @@ VALUES ('annawang@gmail.com', 'ANN1111', 2);
 INSERT INTO Customers
 VALUES ('misaki@yahoo.jp', 'MIS1111', 3);
 
+INSERT INTO Customers
+VALUES ('test@test.com', 'TES1111', 4);
+
+INSERT INTO Customers
+VALUES ('test2@test.com', 'TES1111', 5);
+
+INSERT INTO Customers
+VALUES ('test3@test.com', 'TES1111', 6);
+
+INSERT INTO Customers
+VALUES ('test4@test.com', 'TES1111', 7);
+
 INSERT INTO Members
 VALUES ('annawang2@gmail.com', 'annawang','123456', 1);
 
@@ -365,6 +388,18 @@ VALUES (2,'annawang@gmail.com');
 INSERT INTO ShoppingCarts
 VALUES (3,'misaki@yahoo.jp');
 
+INSERT INTO ShoppingCarts
+VALUES (4,'test@test.com');
+
+INSERT INTO ShoppingCarts
+VALUES (5,'test2@test.com');
+
+INSERT INTO ShoppingCarts
+VALUES (6,'test3@test.com');
+
+INSERT INTO ShoppingCarts
+VALUES (7,'test4@test.com');
+
 INSERT INTO AddRemoveFromCart
 VALUES (1006,1);
 
@@ -387,7 +422,22 @@ INSERT INTO AddRemoveFromCart
 VALUES (1011,3);
 
 INSERT INTO AddRemoveFromCart
-VALUES (1012,3);
+VALUES (1006,4);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1007,4);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1008,4);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1009,5);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1011,5);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1012,6);
 
 INSERT INTO AddRemoveFromWishlist
 VALUES (1013,1);
@@ -413,8 +463,49 @@ VALUES ('smithbbb@hotmail.com',1001);
 INSERT INTO Purchases
 VALUES ('smithbbb@hotmail.com',1002);
 
+INSERT INTO Purchases
+VALUES ('smithbbb@hotmail.com',1003);
+
+INSERT INTO Purchases
+VALUES ('smithbbb@hotmail.com',1004);
+
+INSERT INTO Purchases
+VALUES ('smithbbb@hotmail.com',1005);
+
+INSERT INTO Purchases
+VALUES ('smithbbb@hotmail.com',1006);
+
+INSERT INTO Purchases
+VALUES ('smithbbb@hotmail.com',1020);
+
+INSERT INTO Purchases
+VALUES ('test@test.com',1001);
+
+INSERT INTO Purchases
+VALUES ('test@test.com',1002);
+
+INSERT INTO Purchases
+VALUES ('test@test.com',1003);
+
+INSERT INTO Purchases
+VALUES ('test@test.com',1004);
+
 INSERT INTO Friends
 VALUES ('justanotheremail@hotmail.com','annawang2@gmail.com');
 
+INSERT INTO Friends
+VALUES ('timcook@gmail.com','billgates@gmail.com');
+
+INSERT INTO Friends
+VALUES ('timcook@gmail.com','elonmusk@gmail.com');
+
+INSERT INTO Friends
+VALUES ('elonmusk@gmail.com','billgates@gmail.com');
+
+INSERT INTO Friends
+VALUES ('billgates@gmail.com','sundarpichai@gmail.com');
+
+INSERT INTO Friends
+VALUES ('billgates@gmail.com','elonmusk@gmail.com');
 
 COMMIT;
