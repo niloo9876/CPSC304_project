@@ -16,7 +16,7 @@
    <p>To Show Games, Developers, and onSaleList, press the following button: </p>
    <p><input type="submit" value="Show All Relevant Tables" name="dostuff"></p>
    </form>
-   
+
    <div style="background-color:lightblue">
    <h3>Games Table Queries</h3>
    <p><font size="2">Deliverable 2: INSERT</font></p>
@@ -35,7 +35,7 @@
        <td>
          <select name="gameGenre">
          <option value="Action-Adventure">Action-Adventure</option>
-         <option value="Action">Action</option>
+         <option value="Action">Action</option>F
          <option value="Survival Horror">Survival Horror</option>
          <option value="Simulation">Simulation</option>
          <option value="Strategy">Strategy</option>
@@ -220,7 +220,7 @@
    //html; it's now parsing PHP
    
    $success = True; //keep track of errors so it redirects the page only if there are no errors
-   $db_conn = OCILogon("ora_n9y0b", "a57734162", "dbhost.ugrad.cs.ubc.ca:1522/ug");
+   $db_conn = OCILogon("ora_v7e0b", "a58730136", "dbhost.ugrad.cs.ubc.ca:1522/ug");
    
    function executePlainSQL($cmdstr) { //takes a plain (no bound variables) SQL command and executes it
      //echo "<br>running ".$cmdstr."<br>";
@@ -446,7 +446,7 @@
              header("location: developer.php");
            }
              // Select data...
-             $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+             $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
              printSaleResult($result);
          
            //Commit to save changes...
@@ -472,7 +472,7 @@
              header("location: developer.php");
            }
              // Select data...
-             $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+             $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
              printSaleResult($result);
          
            //Commit to save changes...
@@ -494,7 +494,7 @@
              header("location: developer.php");
            }
              // Select data...
-             $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+             $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
              printSaleResult($result);
          
            //Commit to save changes...
@@ -538,7 +538,7 @@
                printGamesResult($result);
                $result = executePlainSQL("select * from Developers");
                printDevResult($result);
-               $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+               $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
                printSaleResult($result);
            
              //Commit to save changes...
