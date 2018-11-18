@@ -126,37 +126,37 @@ commit;
 
 CREATE TABLE OnSaleList
     (EventIndex  INTEGER,
-     GID         INTEGER,
+     OGID        INTEGER,
      SalePrice   DECIMAL(19,4),
      StartDate   DATE,
      EndDate     DATE,
      PRIMARY KEY (EventIndex),
-     FOREIGN KEY (GID) REFERENCES Games(GID)
-                       ON DELETE CASCADE);
+     FOREIGN KEY (OGID) REFERENCES Games(GID)
+                        ON DELETE CASCADE);
 
 grant select on OnSaleList to public;
 
 commit;
 
 CREATE TABLE AddRemoveFromCart
-    (GID         INTEGER,
+    (CGID        INTEGER,
      SID         INTEGER,
-     PRIMARY KEY (GID, SID),
-     FOREIGN KEY (GID) REFERENCES Games(GID)
-                       ON DELETE CASCADE,
-     FOREIGN KEY (SID) REFERENCES ShoppingCarts(SID)
-                       ON DELETE CASCADE);
+     PRIMARY KEY (CGID, SID),
+     FOREIGN KEY (CGID) REFERENCES Games(GID)
+                        ON DELETE CASCADE,
+     FOREIGN KEY (SID)  REFERENCES ShoppingCarts(SID)
+                        ON DELETE CASCADE);
 
 grant select on AddRemoveFromCart to public;
 
 commit;
 
 CREATE TABLE AddRemoveFromWishlist 
-    (GID         INTEGER,
-     WID         INTEGER,
-     PRIMARY KEY (GID, WID),
-     FOREIGN KEY (GID) REFERENCES Games(GID)
-                       ON DELETE CASCADE,
+    (WGID         INTEGER,
+     WID          INTEGER,
+     PRIMARY KEY (WGID, WID),
+     FOREIGN KEY (WGID) REFERENCES Games(GID)
+                        ON DELETE CASCADE,
      FOREIGN KEY (WID) REFERENCES Wishlists(WID)
                        ON DELETE CASCADE);
 
