@@ -72,7 +72,7 @@
     <td><font size="2">Wishlist ID</font></td>
     </tr>
   <tr>
-    <td><input type="text" name="addGameToWishlist" size="20"></td>
+    <td><input type="text" name="toWishListWID" size="20"></td>
   </tr>
   <tr>
     <td><input type="submit" value="Add Game To Wishlist" name="addGameToWishlist"></p></td>
@@ -110,7 +110,7 @@
             <td><input type="text" name="developerName" size="12"></td>
         </tr>
         <tr>
-            <td><input type="submit" value="Search Games" name="searchDeveloperGame"></p></td>
+            <td><input type="submit" value="Search Games" name="searchDevGame"></p></td>
     </tr>
     </table></p>
 </form>
@@ -219,8 +219,36 @@ function printmembersresult($result) {
     echo "</div>";
 }
 
+function printwishlistsresult($result) { //prints results from a select statement
+    echo "<br>Got data from table AddRemoveFromWishlist:<br>";
+    echo "<div style=\"background-color:lightgrey\">";
+    echo "<table style=\"border-spacing: 20px 0;\">";
+    echo "<tr><td>Game ID</td><td>WIshlist ID</td></tr>";
+
+    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
+    }
+    echo "</table>";
+    echo "</div>";
+
+}
+
 function printsearchsalesresult($result) { //prints results from a select statement
     echo "<br>These games in your wishlist is currently onsale:<br>";
+    echo "<div style=\"background-color:lightgrey\">";
+    echo "<table style=\"border-spacing: 20px 0;\">";
+    echo "<tr><td>Game Name</td></tr>";
+
+    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row[0] . "</td></tr>" ; //or just use "echo $row[0]"
+    }
+    echo "</table>";
+    echo "</div>";
+
+}
+
+function printsearchdevresult($result) { //prints results from a select statement
+    echo "<br>These games in your wishlist(ID:1) is by capcom:<br>";
     echo "<div style=\"background-color:lightgrey\">";
     echo "<table style=\"border-spacing: 20px 0;\">";
     echo "<tr><td>Game Name</td></tr>";
@@ -287,20 +315,23 @@ if ($db_conn) {
 
             //Commit to save changes...
             OCILogoff($db_conn);
-        } else
-            if (array_key_exists('updateMyInformation', $_POST)) {
-                // Update existing game using data from user
+        }
+
+        else
+            if (array_key_exists('AddFriend', $_POST)) {
+                //Getting the values from user and insert game into the table
+                // if(isset($_POST[gameGenre]) ) {
+                // 	$varGenre = $_POST[gameGenre];
+                // }
                 $tuple = array (
-                    ":bind1" => $_POST['updateUsername'],
-                    ":bind2" => $_POST['updatePassword'],
-                    ":bind3" => $_POST['MyEmail']
+                    ":bind1" => $_POST['addFriendMyEmail'],
+                    ":bind2" => $_POST['addFriendOtherEmail']
                 );
                 $alltuples = array (
                     $tuple
                 );
-                executeBoundSQL("UPDATE Members 
-             SET Username=:bind1, Password=:bind2
-             WHERE Email=:bind3", $alltuples);
+                executeBoundSQL("INSERT INTO Friends
+         VALUES (:bind1, :bind2)", $alltuples);
                 OCICommit($db_conn);
 
                 if ($_POST && $success) {
@@ -308,8 +339,31 @@ if ($db_conn) {
                     header("location: member.php");
                 }
                 // Select data...
-                $result = executePlainSQL("select Email, Username, Password, Wid from Members");
-                printmembersresult($result);
+                $result = executePlainSQL("select MyEmail, FriendEmail from games");
+                printfriendsresult($result);
+
+                //Commit to save changes...
+                OCILogoff($db_conn);
+            }
+
+        else
+            if (array_key_exists('addGameToWishlist', $_POST)) {
+                // Update existing game using data from user
+                $tuple = array (
+                    ":bind1" => $_POST['toWishlistGID'],
+                    ":bind2" => $_POST['toWishListWID'],
+                );
+                $alltuples = array (
+                    $tuple
+                );
+                executeBoundSQL("INSERT INTO AddRemoveFromWishlist
+         VALUES (:bind1, :bind2)", $alltuples);
+                OCICommit($db_conn);
+
+                if ($_POST && $success) {
+                    //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+                    header("location: member.php");
+                }
 
                 //Commit to save changes...
                 OCILogoff($db_conn);
@@ -322,152 +376,37 @@ if ($db_conn) {
                     $alltuples = array(
                         $tuple
                     );
-                    $result = executeBoundSQL("select name from Addremovefromwishlist join Onsalelist
-                                                      on wgid = ogid
-                                                      join Games on ogid = gid
-                                                      where wid =:bind1");
+                    $result = executePlainSQL("select name from Games join Addremovefromwishlist
+                                  on wgid = gid
+                                  join Onsalelist on ogid = wgid
+                                  where wid = 1", $alltuples );
                     printsearchsalesresult($result);
                 }
 
-
-            else
-                if (array_key_exists('deleteGameSubmit', $_POST)) {
-                    // Delete existing game using data from user
-                    $tuple = array (
-                        ":bind1" => $_POST['deleteGameID']
-                    );
-                    $alltuples = array (
-                        $tuple
-                    );
-                    executeBoundSQL("DELETE FROM Games WHERE GID=:bind1", $alltuples);
-                    OCICommit($db_conn);
-
-                    if ($_POST && $success) {
-                        //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-                        header("location: developer.php");
-                    }
-                    // Select data...
-                    $result = executePlainSQL("select genre, name, gid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
-                    printGamesResult($result);
-
-                    //Commit to save changes...
-                    OCILogoff($db_conn);
-                } else
-                    if (array_key_exists('addSaleSubmit', $_POST)) {
-                        // Getting the values from user and insert game into the onSaleList
-                        $tuple = array (
-                            ":bind1" => $_POST['addSaleEventIndex'],
-                            ":bind2" => $_POST['addSaleGameID'],
-                            ":bind3" => $_POST['addSalePrice'],
-                            ":bind4" => $_POST['addSaleStart'],
-                            ":bind5" => $_POST['addSaleEnd']
+                else
+                    if (array_key_exists('searchDevGame', $_POST)) {
+                        //Getting the values from user and insert data into the table
+                        $tuple = array(
+                            ":bind1" => $_POST['WID']
                         );
-                        $alltuples = array (
+                        $alltuples = array(
                             $tuple
                         );
-                        executeBoundSQL("INSERT INTO OnSaleList
-           VALUES (:bind1, :bind2, :bind3, :bind4, :bind5)", $alltuples);
-                        OCICommit($db_conn);
+                        $result = executePlainSQL("select name from Games join Addremovefromwishlist
+                                                          on wgid = gid
+                                                          where wid = 1 and devname = 'Capcom'");
+                        printsearchdevresult($result);
+                    }
 
-                        if ($_POST && $success) {
-                            //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-                            header("location: developer.php");
-                        }
-                        // Select data...
-                        $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
-                        printSaleResult($result);
+                else
+                    if (array_key_exists('dostuff', $_POST)) {
 
-                        //Commit to save changes...
-                        OCILogoff($db_conn);
-                    } else
-                        if (array_key_exists('updateSaleSubmit', $_POST)) {
-                            // Update existing entry in OnSaleList using data from user
-                            $tuple = array (
-                                ":bind1" => $_POST['updateSalePrice'],
-                                ":bind2" => $_POST['updateSaleEnd'],
-                                ":bind3" => $_POST['updateEventIndex']
-                            );
-                            $alltuples = array (
-                                $tuple
-                            );
-                            executeBoundSQL("UPDATE OnSaleList 
-             SET SalePrice=:bind1, EndDate=:bind2 
-             WHERE EventIndex=:bind3", $alltuples);
-                            OCICommit($db_conn);
-
-                            if ($_POST && $success) {
-                                //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-                                header("location: developer.php");
-                            }
-                            // Select data...
-                            $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
-                            printSaleResult($result);
-
-                            //Commit to save changes...
-                            OCILogoff($db_conn);
-                        } else
-                            if (array_key_exists('deleteSaleSubmit', $_POST)) {
-                                // Delete entry in OnSaleList using data from user
-                                $tuple = array (
-                                    ":bind1" => $_POST['deleteEventIndex']
-                                );
-                                $alltuples = array (
-                                    $tuple
-                                );
-                                executeBoundSQL("DELETE FROM OnSaleList WHERE EventIndex=:bind1", $alltuples);
-                                OCICommit($db_conn);
-
-                                if ($_POST && $success) {
-                                    //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-                                    header("location: developer.php");
-                                }
-                                // Select data...
-                                $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
-                                printSaleResult($result);
-
-                                //Commit to save changes...
-                                OCILogoff($db_conn);
-                            } else
-                                if (array_key_exists('updateDevSubmit', $_POST)) {
-                                    // Update existing entry in OnSaleList using data from user
-                                    $tuple = array (
-                                        ":bind1" => $_POST['updateDevName'],
-                                        ":bind2" => $_POST['updateDevBank'],
-                                        ":bind3" => $_POST['oldDevName']
-                                    );
-                                    $alltuples = array (
-                                        $tuple
-                                    );
-                                    executeBoundSQL("UPDATE Developers 
-             SET Name=:bind1, BankAccount=:bind2 
-             WHERE Name=:bind3", $alltuples);
-                                    OCICommit($db_conn);
-
-                                    if ($_POST && $success) {
-                                        //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-                                        header("location: developer.php");
-                                    }
-                                    // Select data...
-                                    $result = executePlainSQL("select * from Developers");
-                                    printDevResult($result);
-
-                                    //Commit to save changes...
-                                    OCILogoff($db_conn);
-                                } else
-                                    if (array_key_exists('dostuff', $_POST)) {
-                                        //
-
-                                        // if ($_POST && $success) {
-                                        //   //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-                                        //   header("location: developer.php");
-                                        // }
-                                        // Select data...
                                         $result = executePlainSQL("select * from Friends");
                                         printfriendsresult($result);
                                         $result = executePlainSQL("select * from Members");
                                         printmembersresult($result);
-                                        $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
-                                        printSaleResult($result);
+                                        $result = executePlainSQL("select * from AddRemoveFromWishlist");
+                                        printwishlistsresult($result);
 
                                         //Commit to save changes...
                                         OCILogoff($db_conn);

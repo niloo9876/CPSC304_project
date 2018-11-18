@@ -396,6 +396,9 @@ INSERT INTO AddRemoveFromWishlist
 VALUES (1001,1);
 
 INSERT INTO AddRemoveFromWishlist
+VALUES (1004,1);
+
+INSERT INTO AddRemoveFromWishlist
 VALUES (1014,1);
 
 INSERT INTO AddRemoveFromWishlist
