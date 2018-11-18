@@ -205,7 +205,20 @@
   </tr>
 </table></p>
 </form>
+
+<h3>Group By Queries</h3>
+<form method="POST" action="developer.php">
+
+<p><table>
+  <tr>
+    <td><input type="submit" value="Developer Release Count" name="sumDev"></td>
+    <td><input type="submit" value="Customer Expenditure Total" name="sumCust"></td>
+  </tr>
+</table></p>
+</form>
 </div>
+
+
 
 <a href="steam.php">Back to home</a>
 </html>
@@ -310,6 +323,28 @@ function printDevResult($result) { //prints results from a select statement
   echo "<center><h2>Developers<h2></center>";
 	echo "<table id=\"devTable\">";
 	echo "<tr><td>Developer Name</td><td>Bank Account</td></tr>";
+
+	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
+	}
+  echo "</table>";
+}
+
+function printSumCustResult($result) { //prints results from a select statement
+  echo "<center><h2>Total Money Spent<h2></center>";
+	echo "<table id=\"devTable\">";
+	echo "<tr><td>Customer Email</td><td>Money Spent</td></tr>";
+
+	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+    echo "<tr><td>" . $row[0] . "</td><td>" . "\$" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
+	}
+  echo "</table>";
+}
+
+function printSumDevResult($result) { //prints results from a select statement
+  echo "<center><h2>Games Release Count<h2></center>";
+	echo "<table id=\"devTable\">";
+	echo "<tr><td>Developer Name</td><td>Games Released</td></tr>";
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
     echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
@@ -509,10 +544,25 @@ if ($db_conn) {
           // Select data...
           $result = executePlainSQL("select * from Developers");
           printDevResult($result);
-      
-        //Commit to save changes...
-        OCILogoff($db_conn);
       } else
+      if (array_key_exists('sumDev', $_POST)) {
+      // Update existing entry in OnSaleList using data from user
+      
+        // Select data...
+        $result = executePlainSQL("SELECT devname, count(*) as releases
+        from games
+        group by devname");
+        printSumDevResult($result);
+    } else
+    if (array_key_exists('sumCust', $_POST)) {
+    // Update existing entry in OnSaleList using data from user
+    
+      // Select data...
+      $result = executePlainSQL("Select email, sum(price) from purchases p, games g where p.gid=g.gid Group by email ");
+      printSumCustResult($result);
+  } 
+      
+      else
 				if (array_key_exists('dostuff', $_POST)) {
           //
           
