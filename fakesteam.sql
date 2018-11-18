@@ -31,6 +31,29 @@ drop table Members cascade constraints;
 drop table Wishlists cascade constraints;
 -- cascade delete from members
 
+drop table Reviews;
+-- cascade delete from games
+
+drop view capcomgame;
+
+create view capcomgame
+as select name, devname from games where devname = 'Capcom';
+
+CREATE TABLE Reviews
+    (RID        INTEGER,
+    Rating      INTEGER ,
+    GID         INTEGER ,
+    Intro       VARCHAR(80),
+    Link        VARCHAR(80),
+    PRIMARY KEY (RID),
+    FOREIGN KEY (GID)   REFERENCES Games(GID)
+                        ON DELETE CASCADE);
+
+grant select on Reviews to public;
+
+commit;
+
+
 CREATE TABLE Developers
     (Name        VARCHAR(40),
      BankAccount VARCHAR(20),
@@ -91,7 +114,7 @@ ADD CONSTRAINT CartFK
 FOREIGN KEY (Email) REFERENCES Customers(Email)
                          ON DELETE CASCADE
                          DEFERRABLE INITIALLY DEFERRED;
-                         
+
 
 commit;
 
@@ -106,8 +129,8 @@ grant select on Members to public;
 
 commit;
 
-CREATE TABLE Wishlists         
-    (WID         INTEGER UNIQUE,       
+CREATE TABLE Wishlists
+    (WID         INTEGER UNIQUE,
      Email       VARCHAR(40) NOT NULL,
      PRIMARY KEY (WID, Email));
 
@@ -117,7 +140,7 @@ ALTER TABLE Members
 ADD CONSTRAINT MembersFK
 FOREIGN KEY (WID) REFERENCES Wishlists(WID) DEFERRABLE INITIALLY DEFERRED;
 
-ALTER TABLE Wishlists   
+ALTER TABLE Wishlists
 ADD CONSTRAINT WishlistsFK
 FOREIGN KEY (Email) REFERENCES Members(Email)
                          ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
@@ -151,7 +174,7 @@ grant select on AddRemoveFromCart to public;
 
 commit;
 
-CREATE TABLE AddRemoveFromWishlist 
+CREATE TABLE AddRemoveFromWishlist
     (WGID         INTEGER,
      WID          INTEGER,
      PRIMARY KEY (WGID, WID),
@@ -176,6 +199,28 @@ CREATE TABLE Purchases
                          ON DELETE CASCADE);
 
 grant select on Purchases to public;
+
+CREATE TRIGGER removePurchasedGameFromCart
+AFTER INSERT ON Purchases
+FOR EACH ROW
+BEGIN
+    DELETE FROM AddRemoveFromCart arfc
+    where arfc.CGID = :new.GID
+    and
+    arfc.SID = (select SID from Customers c where c.email = :new.Email);
+END;
+/
+
+CREATE TRIGGER removePurchasedGameFromWL
+AFTER INSERT ON Purchases
+FOR EACH ROW
+BEGIN
+    DELETE FROM AddRemoveFromWishlist arfw
+    where arfw.WGID = :new.GID
+    and
+    arfw.WID = (select WID from Members m where m.email = :new.Email);
+END;
+/
 
 commit;
 
@@ -296,6 +341,18 @@ VALUES ('annawang@gmail.com', 'ANN1111', 2);
 INSERT INTO Customers
 VALUES ('misaki@yahoo.jp', 'MIS1111', 3);
 
+INSERT INTO Customers
+VALUES ('test@test.com', 'TES1111', 4);
+
+INSERT INTO Customers
+VALUES ('test2@test.com', 'TES1111', 5);
+
+INSERT INTO Customers
+VALUES ('test3@test.com', 'TES1111', 6);
+
+INSERT INTO Customers
+VALUES ('test4@test.com', 'TES1111', 7);
+
 INSERT INTO Members
 VALUES ('annawang2@gmail.com', 'annawang','123456', 1);
 
@@ -365,6 +422,18 @@ VALUES (2,'annawang@gmail.com');
 INSERT INTO ShoppingCarts
 VALUES (3,'misaki@yahoo.jp');
 
+INSERT INTO ShoppingCarts
+VALUES (4,'test@test.com');
+
+INSERT INTO ShoppingCarts
+VALUES (5,'test2@test.com');
+
+INSERT INTO ShoppingCarts
+VALUES (6,'test3@test.com');
+
+INSERT INTO ShoppingCarts
+VALUES (7,'test4@test.com');
+
 INSERT INTO AddRemoveFromCart
 VALUES (1006,1);
 
@@ -387,16 +456,31 @@ INSERT INTO AddRemoveFromCart
 VALUES (1011,3);
 
 INSERT INTO AddRemoveFromCart
-VALUES (1012,3);
+VALUES (1006,4);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1007,4);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1008,4);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1009,5);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1011,5);
+
+INSERT INTO AddRemoveFromCart
+VALUES (1012,6);
 
 INSERT INTO AddRemoveFromWishlist
-VALUES (1013,1);
+VALUES (1003,1);
 
 INSERT INTO AddRemoveFromWishlist
 VALUES (1014,1);
 
 INSERT INTO AddRemoveFromWishlist
-VALUES (1015,1);
+VALUES (1005,1);
 
 INSERT INTO AddRemoveFromWishlist
 VALUES (1016,1);
@@ -413,8 +497,49 @@ VALUES ('smithbbb@hotmail.com',1001);
 INSERT INTO Purchases
 VALUES ('smithbbb@hotmail.com',1002);
 
+INSERT INTO Purchases
+VALUES ('smithbbb@hotmail.com',1003);
+
+INSERT INTO Purchases
+VALUES ('smithbbb@hotmail.com',1004);
+
+INSERT INTO Purchases
+VALUES ('smithbbb@hotmail.com',1005);
+
+INSERT INTO Purchases
+VALUES ('smithbbb@hotmail.com',1006);
+
+INSERT INTO Purchases
+VALUES ('smithbbb@hotmail.com',1020);
+
+INSERT INTO Purchases
+VALUES ('test@test.com',1001);
+
+INSERT INTO Purchases
+VALUES ('test@test.com',1002);
+
+INSERT INTO Purchases
+VALUES ('test@test.com',1003);
+
+INSERT INTO Purchases
+VALUES ('test@test.com',1004);
+
 INSERT INTO Friends
 VALUES ('justanotheremail@hotmail.com','annawang2@gmail.com');
 
+INSERT INTO Friends
+VALUES ('timcook@gmail.com','billgates@gmail.com');
+
+INSERT INTO Friends
+VALUES ('timcook@gmail.com','elonmusk@gmail.com');
+
+INSERT INTO Friends
+VALUES ('elonmusk@gmail.com','billgates@gmail.com');
+
+INSERT INTO Friends
+VALUES ('billgates@gmail.com','sundarpichai@gmail.com');
+
+INSERT INTO Friends
+VALUES ('billgates@gmail.com','elonmusk@gmail.com');
 
 COMMIT;

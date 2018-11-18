@@ -8,14 +8,19 @@
   extension.  You must also change the username and password on the 
   OCILogon below to be your ORACLE username and password -->
 
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="style.php" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,700" rel="stylesheet">
+</head>
 
-
-<p>If you wish to reset the table, press the reset button. If this is the first time you're running this page, you MUST use reset</p>
 <form method="POST" action="member.php">
-
-    <p><input type="submit" value="Show All Relevant Tables" name="dostuff"></p>
-
+    <div class="center"><p class="title">REGISTERED MEMBER</p>
+        <p><input type="submit" value="Show All Tables" name="dostuff"></p>
+    </div>
 </form>
+
 
 <p>Add another member as friend:</p>
 
@@ -275,6 +280,19 @@ function printDevResult($result) { //prints results from a select statement
 
 }
 
+function printviewsresult($result) {
+    echo "<br>A view of capcom games:<br>";
+    echo "<div style=\"background-color:lightgrey\">";
+    echo "<table style=\"border-spacing: 20px 0;\">";
+    echo "<tr><td>Game ID</td><td>WIshlist ID</td></tr>";
+
+    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
+    }
+    echo "</table>";
+    echo "</div>";
+}
+
 // Connect Oracle...
 if ($db_conn) {
 
@@ -316,6 +334,32 @@ if ($db_conn) {
             //Commit to save changes...
             OCILogoff($db_conn);
         }
+
+        else
+            if (array_key_exists('updateMyInformation', $_POST)) {
+                // Update existing game using data from user
+                $tuple = array (
+                    ":bind1" => $_POST['updateUsername'],
+                    ":bind2" => $_POST['updatePassword'],
+                    ":bind3" => $_POST['MyEmail']
+                );
+                $alltuples = array (
+                    $tuple
+                );
+                executeBoundSQL("UPDATE Members 
+             SET Username=:bind1, Password=:bind2
+             WHERE Email=:bind3", $alltuples);
+                OCICommit($db_conn);
+                if ($_POST && $success) {
+                    //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
+                    header("location: member.php");
+                }
+                // Select data...
+                $result = executePlainSQL("select Email, Username, Password, Wid from Members");
+                printmembersresult($result);
+                //Commit to save changes...
+                OCILogoff($db_conn);
+            }
 
         else
             if (array_key_exists('AddFriend', $_POST)) {
@@ -407,6 +451,8 @@ if ($db_conn) {
                                         printmembersresult($result);
                                         $result = executePlainSQL("select * from AddRemoveFromWishlist");
                                         printwishlistsresult($result);
+                                        $result = executePlainSQL("select * from capcomgame");
+                                        printviewsresult($result);
 
                                         //Commit to save changes...
                                         OCILogoff($db_conn);
