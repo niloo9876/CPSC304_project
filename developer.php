@@ -406,7 +406,7 @@ if ($db_conn) {
           header("location: developer.php");
         } 
           // Select data...
-          $result = executePlainSQL("select genre, name, ogid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
+          $result = executePlainSQL("select genre, name, gid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
           printGamesResult($result);
       
         //Commit to save changes...
@@ -459,7 +459,7 @@ if ($db_conn) {
           header("location: developer.php");
         }
           // Select data...
-          $result = executePlainSQL("select eventindex, gid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
+          $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
           printSaleResult($result);
       
         //Commit to save changes...
