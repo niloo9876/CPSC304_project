@@ -1,12 +1,5 @@
 <!--Project File for UBC CPSC 304
-  IF YOU HAVE A TABLE CALLED "tab1" IT WILL BE DESTROYED
-
-  The script assumes you already have a server set up
-  All OCI commands are commands to the Oracle libraries
-  To get the file to work, you must place it somewhere where your
-  Apache server can run it, and you must rename it to have a ".php"
-  extension.  You must also change the username and password on the 
-  OCILogon below to be your ORACLE username and password -->
+  David (Yu Feng) Guo, Yixue Xu, Brandon Yip, Niloofar Gharavi -->
 
 <!DOCTYPE html>
 <html>
@@ -128,13 +121,13 @@
 </div>
 
 <div id="allMemberDivs">
-<p><font size="2">Deliverable 11: CREATE VIEW</font></p>
+<h3>Create View Queries</h3>
 <p> See a list of all developers on the platform: </p>
 <form method="POST" action="member.php">
     <!--refresh page when submit-->
     <table>
         <tr>
-            <td><input type="submit" value="Search Games" name="devViewSubmit"></td>
+            <td><input type="submit" value="View All Developers" name="devViewSubmit"></td>
         </tr>
     </table>
 </form>
