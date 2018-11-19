@@ -94,6 +94,15 @@
   </table></p>
 </form>
 
+<p>Search for games on sale</p>
+<form method="POST" action="search.php">
+<p><table>
+  <tr>
+      <td><input type="submit" value="On Sale Search" name="saleSearch"></td>
+  </tr>
+  </table></p>
+</form>
+
 <p>Apply All Filters</p>
 <form method="POST" action="search.php">
 <p><table>
@@ -231,6 +240,7 @@ function printResult($result) { //prints results from a select statement
 
 }
 
+
 // Connect Oracle...
 if ($db_conn) {
 
@@ -256,6 +266,10 @@ if ($db_conn) {
                               $_POST['fromP']." and ".$_POST['toP']);
     printResult($result);
     OCICommit($db_conn);
+  } else if (array_key_exists('saleSearch', $_POST)) {
+    $result = executePlainSQL("select * from Games , OnSaleList where Games.GID = OnSaleList.OGID");
+    printResult($result);
+    OCICommit($db_conn);
   } else if (array_key_exists('detailedSearch', $_POST)) {
     // Search the game table for games that are on sale
     $result = executePlainSQL("select * from Games where genre='".$_POST['dgameGenre']."' and devName='"
@@ -264,7 +278,7 @@ if ($db_conn) {
                               $_POST['dfromP']." and ".$_POST['dtoP']);
     printResult($result);
     OCICommit($db_conn);
-    // TODO
+  
   } else if(array_key_exists('showGames', $_POST)) {
     $result = executePlainSQL("select * from Games");
     printResult($result);
