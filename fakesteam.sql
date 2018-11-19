@@ -351,6 +351,9 @@ VALUES ('test3@test.com', 'TES1111', 6);
 INSERT INTO Customers
 VALUES ('test4@test.com', 'TES1111', 7);
 
+INSERT INTO Customers
+VALUES ('userPurchasedAll@query.com', 'buyThemAll', 8);
+
 INSERT INTO Members
 VALUES ('annawang2@gmail.com', 'annawang','123456', 1);
 
@@ -432,6 +435,9 @@ VALUES (6,'test3@test.com');
 INSERT INTO ShoppingCarts
 VALUES (7,'test4@test.com');
 
+INSERT INTO ShoppingCarts
+VALUES (8,'userPurchasedAll@query.com');
+
 INSERT INTO AddRemoveFromCart
 VALUES (1006,1);
 
@@ -493,7 +499,37 @@ INSERT INTO Purchases
 VALUES ('smithbbb@hotmail.com',1001);
 
 INSERT INTO Purchases
+VALUES ('annawang@gmail.com',1001);
+
+INSERT INTO Purchases
+VALUES ('misaki@yahoo.jp',1001);
+
+INSERT INTO Purchases
+VALUES ('test2@test.com',1001);
+
+INSERT INTO Purchases
+VALUES ('test3@test.com',1001);
+
+INSERT INTO Purchases
+VALUES ('test4@test.com',1001);
+
+INSERT INTO Purchases
 VALUES ('smithbbb@hotmail.com',1002);
+
+INSERT INTO Purchases
+VALUES ('annawang@gmail.com',1002);
+
+INSERT INTO Purchases
+VALUES ('misaki@yahoo.jp',1002);
+
+INSERT INTO Purchases
+VALUES ('test2@test.com',1002);
+
+INSERT INTO Purchases
+VALUES ('test3@test.com',1002);
+
+INSERT INTO Purchases
+VALUES ('test4@test.com',1002);
 
 INSERT INTO Purchases
 VALUES ('smithbbb@hotmail.com',1003);
@@ -509,6 +545,66 @@ VALUES ('smithbbb@hotmail.com',1006);
 
 INSERT INTO Purchases
 VALUES ('smithbbb@hotmail.com',1020);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1001);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1002);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1003);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1004);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1005);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1006);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1007);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1008);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1009);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1010);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1011);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1012);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1013);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1014);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1015);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1016);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1017);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1018);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1019);
+
+INSERT INTO Purchases
+VALUES ('userPurchasedAll@query.com',1020);
 
 INSERT INTO Purchases
 VALUES ('test@test.com',1001);
