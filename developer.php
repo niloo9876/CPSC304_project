@@ -45,7 +45,7 @@
     <td><input type="text" name="gameName" size="20"></td>
     <td><input type="text" name="gameID" size="10"></td>
     <td><input type="text" name="gamePrice" size="8"></td>
-    <td><input type="text" name="gameReleaseDate" size="15"></td>
+    <td><input type="date" name="gameReleaseDate" size="15"></td>
     <td><input type="text" name="gameDevName" size="20"></td>
   </tr>
   <tr>
@@ -421,11 +421,7 @@ if ($db_conn) {
 			executeBoundSQL("INSERT INTO Games
       VALUES (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6)", $alltuples);
       OCICommit($db_conn);
-      
-      if ($_POST && $success) {
-        //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-        header("location: developer.php");
-      }
+
         // Select data...
         $result = executePlainSQL("select genre, name, gid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
         printGamesResult($result);
@@ -450,10 +446,6 @@ if ($db_conn) {
           WHERE GID=:bind5", $alltuples);
         OCICommit($db_conn);
 
-        if ($_POST && $success) {
-          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-          header("location: developer.php");
-        } 
           // Select data...
           $result = executePlainSQL("select genre, name, gid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
           printGamesResult($result);
@@ -472,10 +464,6 @@ if ($db_conn) {
         executeBoundSQL("DELETE FROM Games WHERE GID=:bind1", $alltuples);
         OCICommit($db_conn);
 
-        if ($_POST && $success) {
-          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-          header("location: developer.php");
-        } 
           // Select data...
           $result = executePlainSQL("select genre, name, gid, price, to_char(releasedate, 'YYYY-MM-DD') as ReleaseDate, devname from games");
           printGamesResult($result);
@@ -499,10 +487,6 @@ if ($db_conn) {
         VALUES (:bind1, :bind2, :bind3, :bind4, :bind5)", $alltuples);
         OCICommit($db_conn);
 
-        if ($_POST && $success) {
-          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-          header("location: developer.php");
-        }
           // Select data...
           $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
           printSaleResult($result);
@@ -525,10 +509,6 @@ if ($db_conn) {
           WHERE EventIndex=:bind3", $alltuples);
         OCICommit($db_conn);
         
-        if ($_POST && $success) {
-          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-          header("location: developer.php");
-        }
           // Select data...
           $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
           printSaleResult($result);
@@ -547,10 +527,6 @@ if ($db_conn) {
         executeBoundSQL("DELETE FROM OnSaleList WHERE EventIndex=:bind1", $alltuples);
         OCICommit($db_conn);
 
-        if ($_POST && $success) {
-          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-          header("location: developer.php");
-        }
           // Select data...
           $result = executePlainSQL("select eventindex, ogid, saleprice, to_char(startdate, 'YYYY-MM-DD'), to_char(enddate, 'YYYY-MM-DD') from OnSaleList");
           printSaleResult($result);
@@ -573,10 +549,6 @@ if ($db_conn) {
           WHERE Name=:bind3", $alltuples);
         OCICommit($db_conn);
 
-        if ($_POST && $success) {
-          //POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-          header("location: developer.php");
-        }
           // Select data...
           $result = executePlainSQL("select * from Developers");
           printDevResult($result);

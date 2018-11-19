@@ -375,7 +375,7 @@ if ($db_conn) {
 			$tuple
 		);
 		executeBoundSQL("DELETE FROM AddRemoveFromCart
-			WHERE GID=:bind1 and SID=:bind2", $alltuples);
+			WHERE CGID=:bind1 and SID=:bind2", $alltuples);
 		OCICommit($db_conn);
 		// if ($_POST && $success) {
 		// 	//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
