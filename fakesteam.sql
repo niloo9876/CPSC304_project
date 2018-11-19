@@ -1,3 +1,6 @@
+-- Project File for UBC CPSC 304
+-- David (Yu Feng) Guo, Yixue Xu, Brandon Yip, Niloofar Gharavi
+
 drop table Reviews;
 -- cascade delete from games
 
