@@ -1,19 +1,5 @@
-<!--Test Oracle file for UBC CPSC 304
-  Created by Jiemin Zhang, 2011
-  Modified by Simona Radu and others
-  This file shows the very basics of how to execute PHP commands
-  on Oracle.  
-  specifically, it will drop a table, create a table, insert values
-  update values, and then query for values
- 
-  IF YOU HAVE A TABLE CALLED "tab1" IT WILL BE DESTROYED
-
-  The script assumes you already have a server set up
-  All OCI commands are commands to the Oracle libraries
-  To get the file to work, you must place it somewhere where your
-  Apache server can run it, and you must rename it to have a ".php"
-  extension.  You must also change the username and password on the 
-  OCILogon below to be your ORACLE username and password -->
+<!--Project File for UBC CPSC 304
+  David (Yu Feng) Guo, Yixue Xu, Brandon Yip, Niloofar Gharavi -->
 
 <!DOCTYPE html>
 <html>
@@ -90,6 +76,72 @@
   </tr>
   </table></p>
 </form>
+
+<p>Search for games released between a given price range</p>
+<form method="POST" action="search.php">
+<p><table>
+  <tr>
+    <td><font size="2"> From price</font></td>
+    <td><font size="2"> To price</font></td>
+  </tr>
+  <tr>
+    <td><input type="input" name="fromP" size="10"></td>
+    <td><input type="input" name="toP" size="10"></td>
+  </tr>
+  <tr>
+      <td><input type="submit" value="Search" name="priceSearch"></td>
+  </tr>
+  </table></p>
+</form>
+
+<p>Apply All Filters</p>
+<form method="POST" action="search.php">
+<p><table>
+<tr>
+    <td><font size="2"> Genre</font></td>
+  </tr>
+  <tr>
+   <td>
+      <select name="dgameGenre">
+        <option value="Action-Adventure">Action-Adventure</option>
+        <option value="Action">Action</option>
+        <option value="Survival Horror">Survival Horror</option>
+        <option value="Simulation">Simulation</option>
+        <option value="Strategy">Strategy</option>
+        <option value="Role-Playing">Role-Playing</option>
+        <option value="Sports">Sports</option>
+        <option value="Adventure">Adventure</option>
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td><font size="2"> Developer's name</font></td>
+  </tr>
+  <tr>
+    <td><input type="text" name="ddevName" size="10"></td>
+  </tr>
+  <tr>
+    <td><font size="2"> From date</font></td>
+    <td><font size="2"> To date</font></td>
+  </tr>
+  <tr>
+    <td><input type="date" name="dfromD" size="10"></td>
+    <td><input type="date" name="dtoD" size="10"></td>
+  </tr>
+  <tr>
+    <td><font size="2"> From price</font></td>
+    <td><font size="2"> To price</font></td>
+  </tr>
+  <tr>
+    <td><input type="input" name="dfromP" size="10"></td>
+    <td><input type="input" name="dtoP" size="10"></td>
+  </tr>
+  <tr>
+      <td><input type="submit" value="Search" name="detailedSearch"></td>
+  </tr>
+  </table></p>
+</form>
+
 </div>
 
 <a href="steam.php">Back to home</a>
@@ -101,7 +153,7 @@
 //html; it's now parsing PHP
 
 $success = True; //keep track of errors so it redirects the page only if there are no errors
-$db_conn = OCILogon("ora_w7z0b", "a30166169", "dbhost.ugrad.cs.ubc.ca:1522/ug");
+$db_conn = OCILogon("ora_n9y0b", "a57734162", "dbhost.ugrad.cs.ubc.ca:1522/ug");
 
 function executePlainSQL($cmdstr) { //takes a plain (no bound variables) SQL command and executes it
 	//echo "<br>running ".$cmdstr."<br>";
@@ -168,12 +220,12 @@ function executeBoundSQL($cmdstr, $list) {
 }
 
 function printResult($result) { //prints results from a select statement
-	echo "<br>Found games that match your search<br>";
-	echo "<table>";
+	echo "<center><h2>Found games that match your search</h2></center>";
+	echo "<table class=\"results\">";
 	echo "<tr><td>Game ID</td><td>Name</td><td>Genre</td><td>Price</td><td>ReleaseDate</td><td>DevName</td></tr>";
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-		echo "<tr><td>" . $row[2] . "</td><td>" . $row[1] . "</td><td>" . $row[0] . "</td><td>" . $row[3] . "</td><td>" . $row[4] . "</td><td>" . $row[5] . "</td></tr>"; 
+		echo "<tr><td>" . $row[2] . "</td><td>" . $row[1] . "</td><td>" . $row[0] . "</td><td>" . "$" . $row[3] . "</td><td>" . $row[4] . "</td><td>" . $row[5] . "</td></tr>"; 
 	}
 	echo "</table>";
 
@@ -184,45 +236,32 @@ if ($db_conn) {
 
 	if (array_key_exists('genreSearch', $_POST)) {
 		// Search the game table for specific genre 
-		$tuple = array (":bind1" => $_POST['genre']);
-		$alltuples = array ($tuple);
-    $result = executeBoundSQL("select * from Games where genre=:bind1", $alltuples);
+    $result = executePlainSQL("select * from Games where genre='".$_POST['gameGenre']."'");
     printResult($result);
     OCICommit($db_conn);
     
 	} else if (array_key_exists('devSearch', $_POST)) {
 		// Search the game table for games that are published by the given developer
-		$tuple = array (":bind1" => $_POST['devName']);
-		$alltuples = array ($tuple);
-    $result = executeBoundSQL("select * from Games where devName=:bind1", $alltuples);
+    $result = executePlainSQL("select * from Games where devName='".$_POST['devName']."'");
     printResult($result);
     OCICommit($db_conn);
     
   } else if (array_key_exists('dateSearch', $_POST)) {
-    // Search the game table for games that are published by whithin the given dates
-    $tuple = array (
-      ":bind1" => $_POST['fromD'],
-      ":bind2" => $_POST['toD']
-    );
-    $alltuples = array ($tuple);
-    $result = executeBoundSQL("select * from Games where Price>=:bind1 and Price<=:bind1", $alltuples);
+    $result = executePlainSQL("select * from Games where releasedate between '".
+                              $_POST['fromD']."' and '".$_POST['toD']."'");
     printResult($result);
     OCICommit($db_conn);
-
   } else if (array_key_exists('priceSearch', $_POST)) {
-    // Search the game table for games that are published by whithin the given dates
-    $tuple = array (
-      ":bind1" => $_POST['fromP'],
-      ":bind2" => $_POST['toP']
-    );
-    $alltuples = array ($tuple);
-    $result = executeBoundSQL("select * from Games where ReleaseDate>=:bind1 and ReleaseDate<=:bind1", $alltuples);
+    $result = executePlainSQL("select * from Games where price between ".
+                              $_POST['fromP']." and ".$_POST['toP']);
     printResult($result);
     OCICommit($db_conn);
-// EDIT THIS !!!! TODO
-  } else if (array_key_exists('onSaleSearch', $_POST)) {
+  } else if (array_key_exists('detailedSearch', $_POST)) {
     // Search the game table for games that are on sale
-    $result = executePlainSQL("select * from Games where SalePrice < Price");
+    $result = executePlainSQL("select * from Games where genre='".$_POST['dgameGenre']."' and devName='"
+                              .$_POST['ddevName']."' and releasedate between '".
+                              $_POST['dfromD']."' and '".$_POST['dtoD']."' and price between ".
+                              $_POST['dfromP']." and ".$_POST['dtoP']);
     printResult($result);
     OCICommit($db_conn);
     // TODO
@@ -285,4 +324,3 @@ if ($db_conn) {
      OCI_RETURN_LOBS - return the value of a LOB of the descriptor.  
      Default mode is OCI_BOTH.  */
 ?>
-
