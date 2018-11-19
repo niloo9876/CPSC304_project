@@ -216,6 +216,17 @@
   </tr>
 </table></p>
 </form>
+
+<h3>Division Queries</h3>
+<form method="POST" action="developer.php">
+
+<p><table>
+  <tr>
+    <td><input type="submit" value="Find Games Purchased by Every Customer" name="divide1"></td>
+    <td><input type="submit" value="Find Customers who Purchased Every Game" name="divide2"></td>
+  </tr>
+</table></p>
+</form>
 </div>
 
 
@@ -348,6 +359,28 @@ function printSumDevResult($result) { //prints results from a select statement
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
     echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
+	}
+  echo "</table>";
+}
+
+function printDivideOneResult($result) { //prints results from a select statement
+  echo "<center><h2>Games Purchased by EVERY Customer<h2></center>";
+	echo "<table id=\"devTable\">";
+	echo "<tr><td>Game Name</td><td>Games ID</td></tr>";
+
+	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+    echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>" ; //or just use "echo $row[0]"
+	}
+  echo "</table>";
+}
+
+function printDivideTwoResult($result) { //prints results from a select statement
+  echo "<center><h2>Customer who Purchased EVERY Game<h2></center>";
+	echo "<table id=\"devTable\">";
+	echo "<tr><td>Customer Email</td></tr>";
+
+	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+    echo "<tr><td>" . $row[0] . "</td></tr>" ; //or just use "echo $row[0]"
 	}
   echo "</table>";
 }
@@ -560,7 +593,31 @@ if ($db_conn) {
       // Select data...
       $result = executePlainSQL("Select email, sum(price) from purchases p, games g where p.gid=g.gid Group by email ");
       printSumCustResult($result);
-  } 
+  }  else
+  if (array_key_exists('divide1', $_POST)) {
+  
+    // Select data...
+    $result = executePlainSQL("SELECT g.name, g.gid
+    FROM games g
+    WHERE NOT EXISTS ((SELECT c.email
+            FROM customers c)
+            MINUS (SELECT p.email
+            FROM purchases p
+            WHERE g.gid=p.gid))");
+    printDivideOneResult($result);
+} else
+if (array_key_exists('divide2', $_POST)) {
+
+  // Select data...
+  $result = executePlainSQL("SELECT c.email
+  FROM customers c
+  WHERE NOT EXISTS ((SELECT g.gid
+   FROM games g)
+   MINUS (SELECT p.gid
+   FROM purchases p
+   WHERE p.email=c.email))");
+  printDivideTwoResult($result);
+} 
       
       else
 				if (array_key_exists('dostuff', $_POST)) {
